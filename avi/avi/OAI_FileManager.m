@@ -44,7 +44,7 @@
 }
 
 - (NSDictionary* ) readPlist : (NSString* ) plistToRead {
-    
+   
     //set up an error
     NSError* error;
     
@@ -105,7 +105,6 @@
 }
 
 - (void) createPlist : (NSString* ) filePath  {
-    
     //set path to plist to read in docs directory
     NSString* plistPath = [documentsDirectory stringByAppendingPathComponent:filePath];
     
@@ -161,6 +160,7 @@
 - (NSArray*) getDirectoryContents: (NSString*) projectID {
     
     NSString* directoryPath = [documentsDirectory stringByAppendingPathComponent:projectID];
+    
     return [fileManager contentsOfDirectoryAtPath:directoryPath error:nil];
     
 }

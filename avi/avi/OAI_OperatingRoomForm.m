@@ -93,16 +93,17 @@
                         
                         thisTextField.placeholder = [arrORLabels objectAtIndex:x];
                         thisTextField.myLabel = [arrORLabels objectAtIndex:x];
+                        thisTextField.tag = x;
                         thisTextField.delegate = self;
                         [thisScreen addSubview:thisTextField];
                         [dictRoomData setObject:thisTextField forKey:[arrORLabels objectAtIndex:x]];
                         
                         //601 indicates a numeric entry is needed
-                        if (x>0 && x<4) { 
+                        /*if (x>0 && x<4) {
                             thisTextField.tag = 601;
                         } else if (x == 9 || x == 10) {
                             thisTextField.tag = 601;
-                        }
+                        }*/
                     
                     } else if (x == 5) {
                         
@@ -220,16 +221,17 @@
                         thisTextField.placeholder = [arrLocationData objectAtIndex:x];
                         thisTextField.myLabel = [arrLocationData objectAtIndex:x];
                         thisTextField.delegate = self;
+                        thisTextField.tag = x;
                         [thisScreen addSubview:thisTextField];
                         [dictRoomData setObject:thisTextField forKey:[arrLocationData objectAtIndex:x]];
                         [arrLocationElements addObject:thisTextField];
                         
-                        //601 indicates a numeric entry is needed
+                        /*//601 indicates a numeric entry is needed
                         if (x==4) {
                             thisTextField.tag = 601;
                         } else if (x == 9 || x == 10) {
                             thisTextField.tag = 601;
-                        }
+                        }*/
                     
                     } else if (x>5) {
                         
@@ -253,6 +255,7 @@
                         OAI_TextField* thisTextField = [[OAI_TextField alloc] initWithFrame:CGRectMake(thisCheckbox.frame.origin.x + thisCheckbox.frame.size.width + 10.0, elementY+5.0, maxLabelWidth, 30.0)];
                         thisTextField.placeholder = [arrSplitData objectAtIndex:1];
                         thisTextField.myLabel = [arrSplitData objectAtIndex:1];
+                        thisTextField.tag = x;
                         [thisScreen addSubview:thisTextField];
                         [dictRoomData setObject:thisTextField forKey:[NSString stringWithFormat:@"%@_type", [arrSplitData objectAtIndex:0]]];
                         [arrLocationElements addObject:thisTextField];
@@ -347,8 +350,9 @@
     parsedORData = [self parseORData:dictRoomData:@"OR"];
     saveORData = [[NSMutableDictionary alloc] init];
     
-    [self checkForProjectNumber];
     
+    [self checkForProjectNumber];
+
     //reset the tabs
     scFormOptions.selectedSegmentIndex = -1;
 
@@ -743,7 +747,7 @@
     NSArray* arrParentSubviews = _vMyParent.subviews;
     UIView* vMainSub = [arrParentSubviews objectAtIndex:0];
     NSArray* arrMainSubviews = vMainSub.subviews;
-    OAI_ScrollView* scScroll = [arrMainSubviews objectAtIndex:3];
+    OAI_ScrollView* scScroll = [arrMainSubviews objectAtIndex:5];
     NSArray* arrScrollSubviews = scScroll.subviews;
     UIView* vPage2 = [arrScrollSubviews objectAtIndex:1];
     NSArray* arrSectionSubs = vPage2.subviews;
@@ -751,7 +755,6 @@
     NSArray* arrSiteInspectionElements = vSection.subviews;
     txtProjectNumber = [arrSiteInspectionElements objectAtIndex:1];
     projectNumber = txtProjectNumber.text;
-    
 }
 
 - (void) checkForORID {
@@ -1288,8 +1291,18 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     
-    [textField resignFirstResponder];
-    return YES;
+    int nextTextField = textField.tag + 1;
+    
+    UIResponder* nextResponder = [textField.superview viewWithTag:nextTextField];
+    
+    if (nextResponder) {
+        // Found next responder, so set it.
+        [nextResponder becomeFirstResponder];
+    } else {
+        [textField resignFirstResponder];
+    }
+    
+    return NO;
 }
 
 #pragma mark - Check if string contains numbers (including decimals)

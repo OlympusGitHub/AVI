@@ -7,6 +7,37 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DB3F8DCA17203CAA00CD43E2 /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A381709F72F001AA190 /* Default-Portrait~ipad.png */; };
+		DB3F8DCB17203CB000CD43E2 /* Default-Portrait@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A371709F72F001AA190 /* Default-Portrait@2x~ipad.png */; };
+		DB3F8DCC1721A91F00CD43E2 /* imgENDOALPHA.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A431709F776001AA190 /* imgENDOALPHA.png */; };
+		DB3F8DCD1721A91F00CD43E2 /* btnEmailIconNormal.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A441709F776001AA190 /* btnEmailIconNormal.png */; };
+		DB3F8DCE1721A91F00CD43E2 /* btnSaveIconNormal.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A451709F776001AA190 /* btnSaveIconNormal.png */; };
+		DB3F8DCF1721A91F00CD43E2 /* btnStoreData.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A461709F776001AA190 /* btnStoreData.png */; };
+		DB3F8DD01721A91F00CD43E2 /* btnUploadNormal.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A471709F776001AA190 /* btnUploadNormal.png */; };
+		DB3F8DD11721A91F00CD43E2 /* btnDeleteIconNormal.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A481709F776001AA190 /* btnDeleteIconNormal.png */; };
+		DB3F8DD21721A91F00CD43E2 /* btnLoadData.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A491709F776001AA190 /* btnLoadData.png */; };
+		DB3F8DD31721A91F00CD43E2 /* btnAddLocation.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A4A1709F776001AA190 /* btnAddLocation.png */; };
+		DB3F8DD41721A91F00CD43E2 /* btnViewThumbnails.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A4B1709F776001AA190 /* btnViewThumbnails.png */; };
+		DB3F8DD51721A91F00CD43E2 /* btnSaveBarIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A4C1709F776001AA190 /* btnSaveBarIcon.png */; };
+		DB3F8DD61721A91F00CD43E2 /* btnCameraNormal.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A4D1709F776001AA190 /* btnCameraNormal.png */; };
+		DB3F8DD71721A91F00CD43E2 /* btnSaveHighlight.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A4E1709F776001AA190 /* btnSaveHighlight.png */; };
+		DB3F8DD81721A91F00CD43E2 /* btnSaveNormal.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A4F1709F776001AA190 /* btnSaveNormal.png */; };
+		DB3F8DD91721A91F00CD43E2 /* btnCancelHighlight.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A501709F776001AA190 /* btnCancelHighlight.png */; };
+		DB3F8DDA1721A91F00CD43E2 /* btnCancelNormal.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A511709F776001AA190 /* btnCancelNormal.png */; };
+		DB3F8DDB1721A91F00CD43E2 /* btnSubmitHighlight.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A521709F776001AA190 /* btnSubmitHighlight.png */; };
+		DB3F8DDC1721A91F00CD43E2 /* btnSubmitNormal.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A531709F776001AA190 /* btnSubmitNormal.png */; };
+		DB3F8DDD1721A91F00CD43E2 /* btnContactList.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A541709F776001AA190 /* btnContactList.png */; };
+		DB3F8DDE1721A91F00CD43E2 /* btnNewLocation.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A551709F776001AA190 /* btnNewLocation.png */; };
+		DB3F8DDF1721A91F00CD43E2 /* btnNewOR.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A561709F776001AA190 /* btnNewOR.png */; };
+		DB3F8DE01721A91F00CD43E2 /* btnNewUser.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A571709F776001AA190 /* btnNewUser.png */; };
+		DB3F8DE11721A91F00CD43E2 /* checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A581709F776001AA190 /* checkmark.png */; };
+		DB3F8DE21721A91F00CD43E2 /* btnAccount.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A591709F776001AA190 /* btnAccount.png */; };
+		DB3F8DE31721A91F00CD43E2 /* btnCloseX.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A5A1709F776001AA190 /* btnCloseX.png */; };
+		DB3F8DE41721A91F00CD43E2 /* mailBand.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A5B1709F776001AA190 /* mailBand.png */; };
+		DB3F8DE51721A91F00CD43E2 /* OA_img_logo_iPadOptimized.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A5C1709F776001AA190 /* OA_img_logo_iPadOptimized.png */; };
+		DB3F8DE61721A91F00CD43E2 /* OA_img_logo_pdf.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A5D1709F776001AA190 /* OA_img_logo_pdf.png */; };
+		DB3F8DE71721A91F00CD43E2 /* OA_logo_black_topbar.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A5E1709F776001AA190 /* OA_logo_black_topbar.png */; };
+		DB3F8DEA1721B0E600CD43E2 /* OAI_SetTabOrder.m in Sources */ = {isa = PBXBuildFile; fileRef = DB3F8DE91721B0E600CD43E2 /* OAI_SetTabOrder.m */; };
 		DB9C4963171F17620016BF6D /* OAI_MailManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DB9C4962171F17620016BF6D /* OAI_MailManager.m */; };
 		DBD8CF0B171C3DA700B4006D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB0C1A141709F6F0001AA190 /* UIKit.framework */; };
 		DBD8CF0C171C3DA700B4006D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB0C1A161709F6F0001AA190 /* Foundation.framework */; };
@@ -168,6 +199,8 @@
 		DB0C1AE51709F890001AA190 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		DB0C1AE71709F8A3001AA190 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		DB0C1AE91709F8A9001AA190 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		DB3F8DE81721B0E600CD43E2 /* OAI_SetTabOrder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAI_SetTabOrder.h; sourceTree = "<group>"; };
+		DB3F8DE91721B0E600CD43E2 /* OAI_SetTabOrder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAI_SetTabOrder.m; sourceTree = "<group>"; };
 		DB9C4961171F17620016BF6D /* OAI_MailManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAI_MailManager.h; sourceTree = "<group>"; };
 		DB9C4962171F17620016BF6D /* OAI_MailManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAI_MailManager.m; sourceTree = "<group>"; };
 		DBD8CF03171C262800B4006D /* OAI_TextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAI_TextView.h; sourceTree = "<group>"; };
@@ -347,6 +380,8 @@
 		DB0C1A421709F765001AA190 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				DB3F8DE81721B0E600CD43E2 /* OAI_SetTabOrder.h */,
+				DB3F8DE91721B0E600CD43E2 /* OAI_SetTabOrder.m */,
 				DB0C1AD71709F860001AA190 /* OAI_ModalDisplay.h */,
 				DB0C1AD81709F860001AA190 /* OAI_ModalDisplay.m */,
 				DB0C1AA61709F7BA001AA190 /* Forms */,
@@ -492,10 +527,40 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB3F8DCC1721A91F00CD43E2 /* imgENDOALPHA.png in Resources */,
+				DB3F8DCD1721A91F00CD43E2 /* btnEmailIconNormal.png in Resources */,
+				DB3F8DCE1721A91F00CD43E2 /* btnSaveIconNormal.png in Resources */,
+				DB3F8DCF1721A91F00CD43E2 /* btnStoreData.png in Resources */,
+				DB3F8DD01721A91F00CD43E2 /* btnUploadNormal.png in Resources */,
+				DB3F8DD11721A91F00CD43E2 /* btnDeleteIconNormal.png in Resources */,
+				DB3F8DD21721A91F00CD43E2 /* btnLoadData.png in Resources */,
+				DB3F8DD31721A91F00CD43E2 /* btnAddLocation.png in Resources */,
+				DB3F8DD41721A91F00CD43E2 /* btnViewThumbnails.png in Resources */,
+				DB3F8DD51721A91F00CD43E2 /* btnSaveBarIcon.png in Resources */,
+				DB3F8DD61721A91F00CD43E2 /* btnCameraNormal.png in Resources */,
+				DB3F8DD71721A91F00CD43E2 /* btnSaveHighlight.png in Resources */,
+				DB3F8DD81721A91F00CD43E2 /* btnSaveNormal.png in Resources */,
+				DB3F8DD91721A91F00CD43E2 /* btnCancelHighlight.png in Resources */,
+				DB3F8DDA1721A91F00CD43E2 /* btnCancelNormal.png in Resources */,
+				DB3F8DDB1721A91F00CD43E2 /* btnSubmitHighlight.png in Resources */,
+				DB3F8DDC1721A91F00CD43E2 /* btnSubmitNormal.png in Resources */,
+				DB3F8DDD1721A91F00CD43E2 /* btnContactList.png in Resources */,
+				DB3F8DDE1721A91F00CD43E2 /* btnNewLocation.png in Resources */,
+				DB3F8DDF1721A91F00CD43E2 /* btnNewOR.png in Resources */,
+				DB3F8DE01721A91F00CD43E2 /* btnNewUser.png in Resources */,
+				DB3F8DE11721A91F00CD43E2 /* checkmark.png in Resources */,
+				DB3F8DE21721A91F00CD43E2 /* btnAccount.png in Resources */,
+				DB3F8DE31721A91F00CD43E2 /* btnCloseX.png in Resources */,
+				DB3F8DE41721A91F00CD43E2 /* mailBand.png in Resources */,
+				DB3F8DE51721A91F00CD43E2 /* OA_img_logo_iPadOptimized.png in Resources */,
+				DB3F8DE61721A91F00CD43E2 /* OA_img_logo_pdf.png in Resources */,
+				DB3F8DE71721A91F00CD43E2 /* OA_logo_black_topbar.png in Resources */,
 				DBD8CF13171C3DA700B4006D /* InfoPlist.strings in Resources */,
 				DBD8CF1F171C3DA700B4006D /* ViewController.xib in Resources */,
 				DBD8CF23171C3DCD00B4006D /* aviIcon.png in Resources */,
 				DBD8CF24171C3DD200B4006D /* aviIcon@2x.png in Resources */,
+				DB3F8DCA17203CAA00CD43E2 /* Default-Portrait~ipad.png in Resources */,
+				DB3F8DCB17203CB000CD43E2 /* Default-Portrait@2x~ipad.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -542,6 +607,7 @@
 				DBD8CF15171C3DA700B4006D /* main.m in Sources */,
 				DBFC3AE1171C749300DB908C /* OAI_Switch.m in Sources */,
 				DB9C4963171F17620016BF6D /* OAI_MailManager.m in Sources */,
+				DB3F8DEA1721B0E600CD43E2 /* OAI_SetTabOrder.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

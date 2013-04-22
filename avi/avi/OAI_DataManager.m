@@ -67,6 +67,7 @@
         //get project data
         NSString* strProjectPath = [NSString stringWithFormat:@"%@", strProjectID];
         NSArray* arrProjectFiles = [fileManager getDirectoryContents:strProjectPath];
+       
         
         if (arrProjectFiles.count > 0) {
             
@@ -93,14 +94,14 @@
         //get all projects
         NSArray* arrDocsDirectoryFiles = [fileManager getDocDirectoryFolders];
         
-        if (arrDocsDirectoryFiles.count > 1) {
+        if (arrDocsDirectoryFiles.count > 0) {
             
             hasError = NO;
             
             for(int i=0; i<arrDocsDirectoryFiles.count; i++) {
             
                 NSString* strFileName = [arrDocsDirectoryFiles objectAtIndex:i];
-                if ([strFileName rangeOfString:@".DS_Store"].location == NSNotFound) {
+                if ([strFileName rangeOfString:@".DS_Store"].location == NSNotFound && [strFileName rangeOfString:@"User"].location == NSNotFound && [strFileName rangeOfString:@"Documents"].location == NSNotFound) {
                     [dictData setObject:strFileName forKey:[NSString stringWithFormat:@"Folder_%@", strFileName]];
                 }
             }
@@ -201,9 +202,9 @@
             
             [formElements addObject:
              [[NSMutableDictionary alloc] initWithObjectsAndKeys:
-              @"Endo Alpha Control:", @"Field Name",
+              @"ENDOALPHA Control:", @"Field Name",
               @"MultiCheckbox", @"Field Type",
-              @"NO", @"isRequired",
+              @"One Needed", @"isRequired",
               @"N/A", @"Field Size",
               @"1", @"Rule ID",
               [[NSArray alloc] initWithObjects:@"AVP", @"UCES", @"UCES+" ,nil], @"Checkboxes",
@@ -212,7 +213,7 @@
             
             [formElements addObject:
              [[NSMutableDictionary alloc] initWithObjectsAndKeys:
-              @"Endo Alpha Video:", @"Field Name",
+              @"ENDOALPHA Video:", @"Field Name",
               @"MultiCheckbox", @"Field Type",
               @"NO", @"isRequired",
               @"N/A", @"Field Size",
@@ -384,6 +385,7 @@
             [formElements addObject:
              [[NSMutableDictionary alloc] initWithObjectsAndKeys:
               @"Comments:", @"Field Name",
+              @"ENDOALPHA_Control_Comments", @"myLabel",
               @"Right", @"Element Align",
               @"Text Field", @"Field Type",
               @"NO", @"isRequired",
@@ -461,6 +463,7 @@
             [formElements addObject:
              [[NSMutableDictionary alloc] initWithObjectsAndKeys:
               @"Comments:", @"Field Name",
+              @"ENDOALPHA_Video_Comments", @"myLabel",
               @"Right", @"Element Align",
               @"Text Field", @"Field Type",
               @"NO", @"isRequired",
@@ -509,6 +512,7 @@
             [formElements addObject:
              [[NSMutableDictionary alloc] initWithObjectsAndKeys:
               @"Comments:", @"Field Name",
+              @"Boom_Company_Comments", @"myLabel",
               @"Right", @"Element Align",
               @"Text Field", @"Field Type",
               @"NO", @"isRequired",
@@ -519,7 +523,7 @@
             
             [formElements addObject:
              [[NSMutableDictionary alloc] initWithObjectsAndKeys:
-              @"Constructon:", @"Field Name",
+              @"Construction:", @"Field Name",
               @"Tab", @"Field Type",
               @"YES", @"isRequired",
               [[NSArray alloc] initWithObjects:@"Old", @"New", nil], @"Tabs",
@@ -589,6 +593,7 @@
             [formElements addObject:
              [[NSMutableDictionary alloc] initWithObjectsAndKeys:
               @"Comments:", @"Field Name",
+              @"Safety_Comments", @"myLabel",
               @"Right", @"Element Align",
               @"Text Field", @"Field Type",
               @"NO", @"isRequired",
@@ -621,7 +626,7 @@
               @"Documents", @"Section ID",
               nil]];
             
-            [formElements addObject:
+            /*[formElements addObject:
              [[NSMutableDictionary alloc] initWithObjectsAndKeys:
               @"Pictures (required):", @"Field Name",
               @"Checkbox", @"Field Type",
@@ -631,7 +636,7 @@
               @"Large", @"Element Width",
               @"30", @"Element Height",
               @"Documents", @"Section ID",
-              nil]];
+              nil]];*/
             
             [formElements addObject:
              [[NSMutableDictionary alloc] initWithObjectsAndKeys:
@@ -660,6 +665,7 @@
             [formElements addObject:
              [[NSMutableDictionary alloc] initWithObjectsAndKeys:
               @"Comments:", @"Field Name",
+              @"Documents_Comments", @"myLabel",
               @"Right", @"Element Align",
               @"Text Field", @"Field Type",
               @"NO", @"isRequired",
@@ -777,7 +783,8 @@
     
     BOOL success = [fileManager writeToPlist:strFilePath :dictProjectData];
     
-    if (success) { 
+    if (success) {
+        
         return YES;
     } else {
         return NO;

@@ -45,6 +45,7 @@
         txtContactName.placeholder = @"Contact Name";
         txtContactName.myLabel = @"Contact Name";
         txtContactName.delegate = self;
+        txtContactName.tag = 1;
         [self addSubview:txtContactName];
         
         
@@ -52,12 +53,14 @@
         txtContactPhone.placeholder = @"Contact Phone";
         txtContactPhone.myLabel = @"Contact Phone";
         txtContactPhone.delegate = self;
+        txtContactPhone.tag = 2;
         [self addSubview:txtContactPhone];
         
         
         txtContactEmail = [[OAI_TextField alloc] initWithFrame:CGRectMake(10.0, txtContactPhone.frame.origin.y + txtContactPhone.frame.size.height + 10.0, self.frame.size.width-20, 30.0)];
         txtContactEmail.placeholder = @"Contact Email";
         txtContactEmail.myLabel = @"Contact Email";
+        txtContactEmail.tag = 3;
         txtContactEmail.delegate = self;
         [self addSubview:txtContactEmail];
         
@@ -217,8 +220,18 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     
-    [textField resignFirstResponder];
-    return YES;
+    int nextTextField = textField.tag + 1;
+    
+    UIResponder* nextResponder = [textField.superview viewWithTag:nextTextField];
+    
+    if (nextResponder) {
+        // Found next responder, so set it.
+        [nextResponder becomeFirstResponder];
+    } else {
+        [textField resignFirstResponder];
+    }
+    
+    return NO;
 }
 
 #pragma mark - UITableView Delegate Methods

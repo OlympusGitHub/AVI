@@ -55,12 +55,12 @@
     [btnAccount setBackgroundColor:[UIColor clearColor]];
     [self addSubview:btnAccount];
     
-    UIButton* btnLoadData = [UIButton buttonWithType:UIButtonTypeCustom];
+    /*UIButton* btnLoadData = [UIButton buttonWithType:UIButtonTypeCustom];
     [btnLoadData setImage:[UIImage imageNamed:@"btnLoadData.png"] forState:UIControlStateNormal];
     [btnLoadData setFrame:CGRectMake(btnAccount.frame.origin.x + btnAccount.frame.size.width, btnAccount.frame.origin.y-4.0, 40.0, 40.0)];
     [btnLoadData addTarget:self action:@selector(sendNotice:) forControlEvents:UIControlEventTouchUpInside];
     btnLoadData.tag = 104;
-    [self addSubview:btnLoadData];
+    [self addSubview:btnLoadData];*/
     
     //add title bar title
     CGSize titleSize = [titleBarTitle sizeWithFont:[UIFont fontWithName:@"Helvetica-Bold" size:20.0]];

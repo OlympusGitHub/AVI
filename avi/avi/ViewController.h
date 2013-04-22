@@ -43,6 +43,7 @@
 #import "OAI_ScrollView.h"
 #import "OAI_Checkbox.h"
 #import "OAI_DateTextField.h"
+#import "OAI_SetTabOrder.h"
 
 
 @interface ViewController : UIViewController <UIScrollViewDelegate, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIAlertViewDelegate, MFMailComposeViewControllerDelegate>{
@@ -58,6 +59,8 @@
     OAI_DataManager* dataManager;
     OAI_States* statesManager;
     OAI_MailManager* mailManager;
+    OAI_SetTabOrder* tabManager;
+    
     
     /*********Data************/
     NSMutableArray* arrSectionData;
@@ -80,9 +83,15 @@
     OAI_ModalDisplay* vAddProcedureRoom;
     OAI_ModalDisplay* vSavedProjects;
     
+    UIDatePicker* datePicker;
+    NSDate* thisDate;
+    
+    NSInteger nextTag;
+    
 }
 
 @property (nonatomic, retain) NSArray* arrElements;
+@property (nonatomic, retain) NSMutableArray* arrMasterTabOrder;
 
 - (void) buildSectionElements : (NSArray*) arrThisSectionElements : (UIView*) vSectionElements : (NSString*) strThisSection;
 
@@ -108,7 +117,13 @@
 
 - (void) displayContacts : (NSDictionary*) dictContacts;
 
-- (void) getProjectNumber; 
+- (void) getProjectNumber;
+
+- (void) resetData : (UIButton*) myButton;
+
+- (void) datePickerValueChanged : (id) myDatePicker;
+
+- (void) showSavedProject : (UIButton*) myButton; 
 
 
 

@@ -20,6 +20,8 @@
 @property (nonatomic, retain) NSString* myLabel;
 @property (nonatomic, retain) NSString* myNumberType;
 @property (nonatomic, retain) NSString* isRequired;
+@property (nonatomic, assign) int tabNumber;
+@property (nonatomic, assign) OAI_TextField* nextField;
 
 - (void) handleTap : (CGPoint) hitPoint;
 @end

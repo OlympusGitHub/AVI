@@ -26,6 +26,8 @@
     statesManager = [[OAI_States alloc] init];
     accountManager = [[OAI_Account alloc] init];
     mailManager = [[OAI_MailManager alloc] init];
+    tabManager = [[OAI_SetTabOrder alloc] init];
+    pdfManager = [[OAI_PDFManager alloc] init];
     
     dataManager.vMyParent = self.view;
     
@@ -36,6 +38,12 @@
     arrRequiredElements = [[NSMutableArray alloc] init];
     arrAllElements = [[NSMutableArray alloc] init];
     arrSavedProjects = [[NSMutableArray alloc] init];
+    
+    
+    /*************INIT DATE PICKER******************/
+    datePicker = [[UIDatePicker alloc]init];
+    [datePicker setDatePickerMode:UIDatePickerModeDate];
+    [datePicker addTarget:self action:@selector(datePickerValueChanged:) forControlEvents:UIControlEventValueChanged];
     
     arrStates = [statesManager getStates];
     
@@ -80,9 +88,22 @@
     
     UIButton* btnSave = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [btnSave setTitle:@"Save" forState:UIControlStateNormal];
-    [btnSave setFrame:CGRectMake(500.0, scNav.frame.origin.y + scNav.frame.size.height + 10.0, 120.0, 30.0)];
+    [btnSave setFrame:CGRectMake(240.0, scNav.frame.origin.y + scNav.frame.size.height + 10.0, 120.0, 30.0)];
     [btnSave addTarget:self action:@selector(saveData:) forControlEvents:UIControlEventTouchUpInside];
     [vMainWin addSubview:btnSave];
+    
+    UIButton* btnLoadData = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [btnLoadData setTitle:@"Load Project" forState:UIControlStateNormal];
+    [btnLoadData setFrame:CGRectMake(370.0, scNav.frame.origin.y + scNav.frame.size.height + 10.0, 120.0, 30.0)];
+    [btnLoadData addTarget:self action:@selector(showSavedProject:) forControlEvents:UIControlEventTouchUpInside];
+    [vMainWin addSubview:btnLoadData];
+    
+    UIButton* btnReset = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [btnReset setTitle:@"Reset" forState:UIControlStateNormal];
+    [btnReset setFrame:CGRectMake(500.0, scNav.frame.origin.y + scNav.frame.size.height + 10.0, 120.0, 30.0)];
+    [btnReset addTarget:self action:@selector(resetData:) forControlEvents:UIControlEventTouchUpInside];
+    [vMainWin addSubview:btnReset];
+
     
     UIButton* btnEmail = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [btnEmail setTitle:@"Email" forState:UIControlStateNormal];
@@ -107,12 +128,14 @@
         NSString* strSectionTitle;
         if (i==0) {
             strSectionTitle = @"Instructions";
+            
         } else {
             strSectionTitle = [arrSections objectAtIndex:i-1];
         }
         
         //set up the section holder
         UIView* vSection = [[UIView alloc] initWithFrame:CGRectMake(sectionX, sectionY, sectionW, sectionH)];
+        vSection.tag = i;
         
         //get the title size
         CGSize sectionTitleSize = [strSectionTitle sizeWithFont:[UIFont fontWithName:@"Helvetica-Bold" size:24.0]];
@@ -188,7 +211,79 @@
                 [self buildSectionElements:arrThisSubSectionElements :vSubSection :strSectionTitle];
                 
                 [svSubSections addSubview:vSubSection];
+            
             }
+            
+        } else if (i==0) {
+            
+            UIFont* instFont = [UIFont fontWithName:@"Helvetica" size:22.0];
+            UIColor* fontColor = [colorManager setColor:51.0 :51.0 :51.0];
+            
+            NSString* strInst = @"Welcome to the AVI Site Integration Report App. This app is intended to provide you with a means of collecting, storing and submitting data in relation to an ENDOALPHA installation.\n\nTo begin, touch any of the tabs at the top of the screen. The section associated with that tab will appear. Fill in the appropriate information.\n\nYour information can be saved at any time by clicking the \"Save\" button located at the top right of the screen. Once you have completed filling in the information for the site report click the \"Email\" button to submit the information.\n\n";
+            CGSize instrSize = [strInst sizeWithFont:instFont constrainedToSize:CGSizeMake(600.0, 999.0) lineBreakMode:NSLineBreakByWordWrapping];
+            
+            UILabel* lblIntroText = [[UILabel alloc] initWithFrame:CGRectMake(50.0, lblSectionTitle.frame.origin.y + lblSectionTitle.frame.size.height + 30.0, instrSize.width, instrSize.height)];
+            lblIntroText.text = strInst;
+            lblIntroText.textColor = fontColor;
+            lblIntroText.font = instFont;
+            lblIntroText.numberOfLines = 0;
+            lblIntroText.lineBreakMode = NSLineBreakByWordWrapping;
+            [lblIntroText sizeToFit];
+            [vSection addSubview:lblIntroText];
+            
+            NSString* strViewInst = @"To view a list of saved information click on the list icons for the information you wish to load (Projects, Contacts, Procedure Rooms and Locations).";
+            CGSize viewSize = [strViewInst sizeWithFont:instFont constrainedToSize:CGSizeMake(600.0, 999.0) lineBreakMode:NSLineBreakByWordWrapping];
+            
+            //loading data
+            UILabel* lblViewText = [[UILabel alloc] initWithFrame:CGRectMake(100.0, lblIntroText.frame.origin.y + lblIntroText.frame.size.height + 10, viewSize.width, viewSize.height)];
+            lblViewText.text = strViewInst;
+            lblViewText.textColor = fontColor;
+            lblViewText.font = instFont;
+            lblViewText.numberOfLines = 0;
+            lblViewText.lineBreakMode = NSLineBreakByWordWrapping;
+            [lblViewText sizeToFit];
+            [vSection addSubview:lblViewText];
+            
+            UIImage* btnViewData = [UIImage imageNamed:@"btnLoadData.png"];
+            UIImageView* imgViewData = [[UIImageView alloc] initWithImage:btnViewData];
+            [imgViewData setFrame:CGRectMake(50.0, lblIntroText.frame.origin.y + lblIntroText.frame.size.height + 10, btnViewData.size.width, btnViewData.size.height)];
+            [vSection addSubview:imgViewData];
+            
+            NSString* strLoadInst = @"To load saved information click on the load icon for the information you wish to load (Projects, Contacts, Procedure Rooms and Locations).";
+            CGSize loadSize = [strLoadInst sizeWithFont:instFont constrainedToSize:CGSizeMake(600.0, 999.0) lineBreakMode:NSLineBreakByWordWrapping];
+            
+            //loading data
+            UILabel* lblLoadText = [[UILabel alloc] initWithFrame:CGRectMake(100.0, lblViewText.frame.origin.y + lblViewText.frame.size.height + 10, loadSize.width, loadSize.height)];
+            lblLoadText.text = strLoadInst;
+            lblLoadText.textColor = fontColor;
+            lblLoadText.font = instFont;
+            lblLoadText.numberOfLines = 0;
+            lblLoadText.lineBreakMode = NSLineBreakByWordWrapping;
+            [lblLoadText sizeToFit];
+            [vSection addSubview:lblLoadText];
+            
+            UIImage* btnLoadData = [UIImage imageNamed:@"btnUploadNormal.png"];
+            UIImageView* imgLoadData = [[UIImageView alloc] initWithImage:btnLoadData];
+            [imgLoadData setFrame:CGRectMake(50.0, lblViewText.frame.origin.y + lblViewText.frame.size.height + 10, btnLoadData.size.width, btnLoadData.size.height)];
+            [vSection addSubview:imgLoadData];
+            
+            NSString* strSaveInst = @"To save information click on the save icon for the information you wish to save (Projects, Contacts, Procedure Rooms and Locations).";
+            CGSize saveSize = [strSaveInst sizeWithFont:instFont constrainedToSize:CGSizeMake(600.0, 999.0) lineBreakMode:NSLineBreakByWordWrapping];
+            
+            //loading data
+            UILabel* lblSaveText = [[UILabel alloc] initWithFrame:CGRectMake(100.0, lblLoadText.frame.origin.y + lblLoadText.frame.size.height + 10, saveSize.width, saveSize.height)];
+            lblSaveText.text = strSaveInst;
+            lblSaveText.textColor = fontColor;
+            lblSaveText.font = instFont;
+            lblSaveText.numberOfLines = 0;
+            lblSaveText.lineBreakMode = NSLineBreakByWordWrapping;
+            [lblSaveText sizeToFit];
+            [vSection addSubview:lblSaveText];
+            
+            UIImage* btnSaveData = [UIImage imageNamed:@"btnStoreData.png"];
+            UIImageView* imgSaveData = [[UIImageView alloc] initWithImage:btnSaveData];
+            [imgSaveData setFrame:CGRectMake(50.0, lblLoadText.frame.origin.y + lblLoadText.frame.size.height + 10, btnSaveData.size.width, btnSaveData.size.height)];
+            [vSection addSubview:imgSaveData];
             
         }
         
@@ -198,6 +293,10 @@
     }
     
     [vMainWin addSubview:scrollManager];
+    
+    tabManager.arrAllElements = arrAllElements;
+
+    _arrMasterTabOrder = [tabManager setTabOrder];
     
     [self.view addSubview:vMainWin];
     
@@ -226,6 +325,8 @@
         
         [self.view addSubview:appSplashScreen];
         [appSplashScreen runSplashScreenAnimation];
+        
+        
     }
     
     /***********************************
@@ -303,6 +404,7 @@
     float elementW = 0.0;
     float elementH = 0.0;
     
+    int tag;
     for(int i=0; i<arrThisSectionElements.count; i++) {
                 
         //get the dict
@@ -317,6 +419,8 @@
         //get the requiremnt
         NSString* strIsRequired = [dictThisElement objectForKey:@"isRequired"];
         
+        NSString* strCommentLabel = [dictThisElement objectForKey:@"myLabel"];
+        
         //get the size
         CGSize fieldNameSize = [strFieldName sizeWithFont:[UIFont fontWithName:@"Helvetica" size:20.0] constrainedToSize:CGSizeMake(600.0, 999.0) lineBreakMode:NSLineBreakByWordWrapping];
         
@@ -330,7 +434,7 @@
         lblFieldName.lineBreakMode = NSLineBreakByWordWrapping;
         [vSectionElements addSubview:lblFieldName];
         
-        
+        tag = i+1;
         if([strFieldType isEqualToString:@"Text Field"]) {
             
             //get the requiremnt
@@ -346,8 +450,20 @@
             labelIncrement = 30.0;
             
             OAI_TextField* txtThisField = [[OAI_TextField alloc] initWithFrame:CGRectMake(elementX, elementY, elementW, elementH)];
-            txtThisField.myLabel = strFieldName;
+            
+            if (strCommentLabel.length > 0) {
+                txtThisField.myLabel = strCommentLabel;
+            } else { 
+                txtThisField.myLabel = strFieldName;
+            }
+            
             txtThisField.isRequired = strIsRequired;
+            txtThisField.tag = tag;
+            
+            if ([txtThisField.myLabel rangeOfString:@"Date"].location != NSNotFound) {
+                txtThisField.inputView = datePicker;
+            }
+            
             txtThisField.delegate = self;
             
             [vSectionElements addSubview:txtThisField];
@@ -390,6 +506,7 @@
             
             //set up the max label size
             float maxCheckBoxLabel = 0.0;
+            
             for(int d=0; d<arrCheckboxes.count; d++ ) {
                 
                 NSString* strCheckboxTitle = [arrCheckboxes objectAtIndex:d];
@@ -479,8 +596,20 @@
                 [btnThisButton addTarget:self action:@selector(buttonManager:) forControlEvents:UIControlEventTouchUpInside];
                 [btnThisButton setFrame:CGRectMake(elementX, elementY, 79.0, 72.0)];
                 btnThisButton.tag = tag;
-                
                 [vSectionElements addSubview:btnThisButton];
+
+                
+                CGSize buttonLabelSize = [strBtnTitle sizeWithFont:[UIFont fontWithName:@"Helvetica" size:10.0]];
+                
+                UILabel* lblThisButton = [[UILabel alloc] initWithFrame:CGRectMake((btnThisButton.frame.origin.x+btnThisButton.frame.size.width/2)-(buttonLabelSize.width/2), btnThisButton.frame.origin.y+btnThisButton.frame.size.height + 4.0, buttonLabelSize.width, buttonLabelSize.height)];
+                lblThisButton.text = strBtnTitle;
+                lblThisButton.font = [UIFont fontWithName:@"Helvetica" size:10.0];
+                lblThisButton.textColor = [colorManager setColor:51.0 :51.0 :51.0];
+                lblThisButton.textAlignment = NSTextAlignmentCenter;
+                lblThisButton.backgroundColor = [UIColor clearColor];
+                [vSectionElements addSubview:lblThisButton];
+                
+                
                 
                 elementX = elementX + 90.0;
                 
@@ -495,6 +624,8 @@
 
     //for passing to other views
     _arrElements = arrAllElements;
+    
+    
 
 }
 
@@ -554,10 +685,12 @@
                 [self animationManager:nil:vThisView];
             
             } else if ([strViewToShow isEqualToString:@"Saved Projects"]) {
-                 
+                
                 NSDictionary* dictProjects = [dataManager getData:nil :@"All Projects"];
                 
-                if (dictProjects.count > 0) { 
+                NSString* strResults = [dictProjects objectForKey:@"Result"];
+                
+                if (![strResults isEqualToString:@"Fail"]) {
                     
                     for(NSString* strThisKey in dictProjects) {
                         
@@ -571,6 +704,15 @@
                     
                     [self animationManager:thisModal:nil];
                     
+                } else {
+                    
+                    UIAlertView *alert =
+                    [[UIAlertView alloc] initWithTitle: @"Project Load Error!"
+                               message: @"There was a problem loading saved projects."
+                              delegate: self
+                     cancelButtonTitle: @"OK"
+                     otherButtonTitles: nil];
+                    [alert show];
                 }
             
             }
@@ -784,6 +926,39 @@
     
 }
 
+- (void) showSavedProject:(UIButton *)myButton  {
+    
+    NSDictionary* dictProjects = [dataManager getData:nil :@"All Projects"];
+    
+    NSString* strResults = [dictProjects objectForKey:@"Result"];
+    
+    if (![strResults isEqualToString:@"Fail"]) {
+        
+        for(NSString* strThisKey in dictProjects) {
+            
+            [arrSavedProjects addObject:[dictProjects objectForKey:strThisKey]];
+        }
+        
+        vSavedProjects.arrModalTableData = arrSavedProjects;
+        [vSavedProjects reloadTableData];
+        
+        OAI_ModalDisplay* thisModal = vSavedProjects;
+        
+        [self animationManager:thisModal:nil];
+        
+    } else {
+        
+        UIAlertView *alert =
+        [[UIAlertView alloc] initWithTitle: @"Project Load Error!"
+                                   message: @"There was a problem loading saved projects."
+                                  delegate: self
+                         cancelButtonTitle: @"OK"
+                         otherButtonTitles: nil];
+        [alert show];
+    }
+
+}
+
 - (void) saveData : (UIButton*) myButton {
     
     [self.view endEditing:YES];
@@ -835,6 +1010,66 @@
     
 }
 
+- (void) datePickerValueChanged : (id) myDatePicker {
+    
+    NSDateFormatter* dfDate = [[NSDateFormatter alloc] init];
+    [dfDate setDateFormat:@"MM/dd/YYYY"];
+    
+    thisDate = datePicker.date;
+    
+    for(int i=0; i<arrAllElements.count; i++) {
+        if ([[arrAllElements objectAtIndex:i] isMemberOfClass:[OAI_TextField class]]) {
+            OAI_TextField* txtThisField = (OAI_TextField*)[arrAllElements objectAtIndex:i];
+            if (txtThisField.isFirstResponder) {
+                txtThisField.text = [dfDate stringFromDate:thisDate];
+            }
+        }
+    }
+    
+    
+}
+
+
+
+- (void) resetData : (UIButton*) myButton {
+    
+    for(int i=0; i<arrAllElements.count; i++) {
+        
+        if ([[arrAllElements objectAtIndex:i] isMemberOfClass:[OAI_TextField class]]) {
+            
+            OAI_TextField* txtThisField = (OAI_TextField*)[arrAllElements objectAtIndex:i];
+            txtThisField.text = @"";
+            
+        } else if ([[arrAllElements objectAtIndex:i] isMemberOfClass:[OAI_Checkbox class]]) {
+            
+            OAI_Checkbox* thisCheckbox = (OAI_Checkbox*)[arrAllElements objectAtIndex:i];
+            [thisCheckbox turnCheckOff];
+                        
+        } else if ([[arrAllElements objectAtIndex:i] isMemberOfClass:[OAI_SimpleCheckbox class]]) {
+            
+            OAI_SimpleCheckbox* thisCheckbox = (OAI_SimpleCheckbox*)[arrAllElements objectAtIndex:i];
+            [thisCheckbox turnCheckOff]; 
+          
+        } else if ([[arrAllElements objectAtIndex:i] isMemberOfClass:[UITableView class]]) {
+            
+            UITableView* tblThisTable = (UITableView*)[arrAllElements objectAtIndex:i];
+            
+            NSIndexPath *selectedPath = tblThisTable.indexPathForSelectedRow;
+            
+            [tblThisTable deselectRowAtIndexPath:selectedPath animated:NO];
+            
+                        
+        } else if ([[arrAllElements objectAtIndex:i] isMemberOfClass:[OAI_Switch class]]) {
+            
+            OAI_Switch* swThisSwitch = (OAI_Switch*)[arrAllElements objectAtIndex:i];
+            swThisSwitch.selectedSegmentIndex = -1;
+            
+        }
+
+    }
+    
+}
+
 - (void) getProjectNumber {
     
     for(int i=0; i<arrAllElements.count; i++) {
@@ -868,8 +1103,31 @@
 
         NSString* strProjectPath = [NSString stringWithFormat:@"%@/Project_%@.plist", projectNumber, projectNumber];
         
+        NSString* strContactPath = [NSString stringWithFormat:@"%@/Contacts.plist", projectNumber];
+        
+        NSString* strProcedurePath = [NSString stringWithFormat:@"%@/OperatingRooms.plist", projectNumber];
+        
         //get the main project data
         NSDictionary* dictProjectData = [fileManager readPlist:strProjectPath];
+        NSDictionary* dictContactData = [fileManager readPlist:strContactPath];
+        NSDictionary* dictProcedureData = [fileManager readPlist:strProcedurePath];
+        NSDictionary* dictAccountData = [fileManager readPlist:@"UserAccount.plist"];
+        
+        if (dictAccountData.count == 0) {
+            isValid = NO;
+            [strErrMsg appendString:@"You must enter your account data.\n\n"];
+        }
+        
+        if (dictContactData.count == 0) {
+            isValid = NO;
+            [strErrMsg appendString:@"You must enter at least one contact.\n\n"];
+        }
+        
+       if (dictProcedureData.count == 0) {
+            isValid = NO;
+            [strErrMsg appendString:@"You must enter at least one procedure room.\n\n"];
+        }
+        
         
         if(dictProjectData.count > 0) {
             
@@ -890,11 +1148,9 @@
                         //on a match, get the saved data
                         NSString* strFieldValue = [dictProjectData objectForKey:strThisKey];
                         
-                        
-                        
                         if (!strFieldValue || strFieldValue == nil || [strFieldValue isEqualToString:@"-1"] ||[strFieldValue isEqualToString:@"No Entry"] || [strFieldValue isEqualToString:@""]) {
                             
-                            [strErrMsg appendString:[NSString stringWithFormat:@"%@\n", strThisKey]];
+                            [strErrMsg appendString:[NSString stringWithFormat:@"%@\n\n", strThisKey]];
                             isValid = NO;
                         }
                     }
@@ -902,6 +1158,9 @@
                 }
                 
             }
+            
+            //check the AVP/UCES/UCES+ checkboxes
+            
             
             if (!isValid) {
                 
@@ -924,9 +1183,25 @@
                 NSString* strProcedurePath = [NSString stringWithFormat:@"%@/OperatingRooms.plist", projectNumber];
                 NSString* strLocationsPath = [NSString stringWithFormat:@"%@/Locations.plist", projectNumber];
                 
-                [dictMasterData setObject:[fileManager readPlist:strContactPath] forKey:@"Contacts"];
-                [dictMasterData setObject:[fileManager readPlist:strProcedurePath] forKey:@"Procedure Rooms"];
-                [dictMasterData setObject:[fileManager readPlist:strLocationsPath] forKey:@"Locations"];
+                NSDictionary* dictContacts = [fileManager readPlist:strContactPath];
+                NSDictionary* dictProcedureRooms = [fileManager readPlist:strProcedurePath];
+                NSDictionary* dictLocations = [fileManager readPlist:strLocationsPath];
+                
+                if (dictContacts){ 
+                    [dictMasterData setObject:dictContacts forKey:@"Contacts"];
+                }
+                
+                if (dictProcedureRooms) { 
+                    [dictMasterData setObject:dictProcedureRooms forKey:@"Procedure Rooms"];
+                }
+                
+                if (dictLocations) { 
+                    [dictMasterData setObject:dictLocations forKey:@"Locations"];
+                }
+                
+                if(dictAccountData) {
+                    [dictMasterData setObject:dictAccountData forKey:@"Account Data"];
+                }
             
                 //send to mail manager to parse into html
                 mailManager.dictProjectData = dictMasterData;
@@ -943,8 +1218,11 @@
                     //init a mail view controller
                     MFMailComposeViewController *mailViewController = [[MFMailComposeViewController alloc] init];
                     
+                    NSArray* ccRecipients = [[NSArray alloc] initWithObjects:@"douglas.curry@olympus.com", @"lisa.webb@olympus.com", nil];
+                    
                     NSArray* bccRecipients = [[NSArray alloc] initWithObjects:@"steve.suranie@olympus.com", nil];
                     
+                    [mailViewController setCcRecipients:ccRecipients];
                     [mailViewController setBccRecipients:bccRecipients];
                     
                     //set delegate
@@ -955,18 +1233,19 @@
                     [mailViewController setMessageBody:strMailBody isHTML:YES];
                     
                     NSString* strPDFTitle = [NSString stringWithFormat:@"SiteInspectionReport_%@.pdf", projectNumber];
+                    
                     pdfManager.projectNumber = projectNumber;
                     pdfManager.dictResults = dictMasterData;
-                    [pdfManager makePDF:projectNumber :dictMasterData];
-                    
+                    [pdfManager makePDF:strPDFTitle :dictMasterData];
+                                        
                     //get path to pdf file
                     NSArray* paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
                     NSString* documentsDirectory = [paths objectAtIndex:0];
-                    NSString* pdfFilePath = [documentsDirectory stringByAppendingPathComponent:strPDFTitle];
+                    NSString* pdfFilePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@/%@", projectNumber, strPDFTitle]];
                     
                     //convert pdf file to NSData
                     NSData* pdfData = [NSData dataWithContentsOfFile:pdfFilePath];
-                    
+                                        
                     //attach the pdf file
                     [mailViewController addAttachmentData:pdfData mimeType:@"application/pdf" fileName:strPDFTitle];
                    
@@ -1011,6 +1290,7 @@
 }
 
 -(void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error{
+    
     
     switch (result){
         case MFMailComposeResultCancelled:
@@ -1097,7 +1377,7 @@
         } else {
             
             UIAlertView *alert =
-            [[UIAlertView alloc] initWithTitle: @"Data Retrieval Error!"
+            [[UIAlertView alloc] initWithTitle: @"Error!"
                message: strErrMsg
               delegate: self
              cancelButtonTitle: @"OK"
@@ -1108,7 +1388,7 @@
     } else {
         
         UIAlertView *alert =
-        [[UIAlertView alloc] initWithTitle: @"Data Retrieval Error!"
+        [[UIAlertView alloc] initWithTitle: @"Error!"
             message: @"You cannot perform this action without a project number!"
               delegate: self
      cancelButtonTitle: @"OK"
@@ -1378,12 +1658,40 @@
         projectNumber = textField.text;
     }
     
+    
+    
 }
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+- (void)textFieldDidBeginEditing:(OAI_TextField *)textField {
     
-    [textField resignFirstResponder];
-    return YES;
+    nextTag = textField.tag + 1;
+    
+    if([textField.myLabel rangeOfString:@"Date"].location !=NSNotFound) {
+        
+        NSDateFormatter* dfDate = [[NSDateFormatter alloc] init];
+        [dfDate setDateFormat:@"MM/dd/YYYY"];
+        
+        NSDate *date = [NSDate date];
+        textField.text = [dfDate stringFromDate:date];
+        
+    }
+}
+
+- (BOOL)textFieldShouldReturn:(OAI_TextField *)textField {
+    
+    int nextTextField = textField.tag + 1;
+    
+    UIResponder* nextResponder = [textField.superview viewWithTag:nextTextField];
+    
+    if (nextResponder) {
+        // Found next responder, so set it.
+        [nextResponder becomeFirstResponder];
+    } else { 
+        [textField resignFirstResponder];
+    }
+    
+    return NO;
+        
 }
 
 
