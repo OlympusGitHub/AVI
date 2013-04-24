@@ -156,6 +156,12 @@
             
             [self buildSectionElements:arrThisSectionElements :vSectionElements:strSectionTitle];
             
+        } else if (i==5) {
+            
+            NSArray* arrThisSectionElements = [arrSectionData objectAtIndex:i-1];
+            
+            [self buildSectionElements:arrThisSectionElements :vSectionElements:strSectionTitle];
+            
         } else if (i==4) {
             
             //need to get the subsections 
@@ -614,6 +620,23 @@
                 elementX = elementX + 90.0;
                 
             }
+            
+        } else if ([strFieldType isEqualToString:@"Text View"]) {
+            
+            
+            elementW = 400.0;
+            elementX = 200.0;
+            elementH = 600.0;
+            
+            OAI_TextView* txtThisView = [[OAI_TextView alloc] initWithFrame:CGRectMake(elementX, elementY, elementW, elementH)];
+            txtThisView.myLabel = strFieldName;
+            txtThisView.layer.borderWidth = 1.0;
+            txtThisView.layer.borderColor = [colorManager setColor:51.0 :51.0 :51.0].CGColor;
+            txtThisView.layer.cornerRadius = 5;
+            txtThisView.clipsToBounds = YES;
+            [vSectionElements addSubview:txtThisView];
+            [arrAllElements addObject:txtThisView];
+            
         }
     
     //increment label and next field
@@ -879,6 +902,19 @@
                     
                 }
                 
+            } else if ([[arrAllElements objectAtIndex:i] isMemberOfClass:[OAI_TextView class]]) {
+                
+                OAI_TextView* txtThisView = (OAI_TextView*)[arrAllElements objectAtIndex:i];
+                
+                strElementName = txtThisView.myLabel;
+                
+                if ([strElementName isEqualToString:strThisKey]) {
+                    if (![[dictThisProject objectForKey:strThisKey] isEqualToString:@"No Entry"]) {
+                        txtThisView.text = [dictThisProject objectForKey:strThisKey];
+                    }
+                }
+
+                
             }
 
         }
@@ -1130,7 +1166,6 @@
         
         
         if(dictProjectData.count > 0) {
-            
             //validate the data
             for(NSString* strThisKey in dictProjectData) {
                 
@@ -1140,6 +1175,7 @@
                     //get the dict and then the field name
                     NSDictionary* dictThisElementInfo = [arrRequiredElements objectAtIndex:r];
                     
+                    
                     NSString* strFieldName = [dictThisElementInfo objectForKey:@"Field Name"];
                     
                     //check for a match
@@ -1147,6 +1183,8 @@
                         
                         //on a match, get the saved data
                         NSString* strFieldValue = [dictProjectData objectForKey:strThisKey];
+                        
+                        
                         
                         if (!strFieldValue || strFieldValue == nil || [strFieldValue isEqualToString:@"-1"] ||[strFieldValue isEqualToString:@"No Entry"] || [strFieldValue isEqualToString:@""]) {
                             
@@ -1236,6 +1274,7 @@
                     
                     pdfManager.projectNumber = projectNumber;
                     pdfManager.dictResults = dictMasterData;
+                    
                     [pdfManager makePDF:strPDFTitle :dictMasterData];
                                         
                     //get path to pdf file

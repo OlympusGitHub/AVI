@@ -143,7 +143,6 @@
     NSMutableArray* arrFormData = [[NSMutableArray alloc] init];
     
     for(int i=0; i<arrSections.count; i++) {
-        
         NSMutableArray* formElements = [[NSMutableArray alloc] init];
         
         if ([[arrSections objectAtIndex:i] isEqualToString:@"Site Information"]) {
@@ -307,7 +306,7 @@
             
             [formElements addObject:
              [[NSMutableDictionary alloc] initWithObjectsAndKeys:
-              @"Cabeling length does not exceed approx 130ft. between AV equipment to AVP Rack:", @"Field Name",
+              @"Cabling length does not exceed approx 130ft. between AV equipment to AVP Rack:", @"Field Name",
               @"Checkbox", @"Field Type",
               @"NO", @"isRequired",
               @"N/A", @"Field Size",
@@ -677,14 +676,13 @@
             for(int x=0; x<formElements.count; x++) {
                 
                 NSDictionary* dictThisElement = [formElements objectAtIndex:x];
-                
                 NSString* strIsRequired = [dictThisElement objectForKey:@"isRequired"];
                 if ([strIsRequired isEqualToString:@"YES"]) {
                     [_arrRequiredElements addObject:dictThisElement];
                 }
             }
             
-        } else if ([[arrSections objectAtIndex:i] isEqualToString:@"Miscellaneous"]) {
+        } else if ([[arrSections objectAtIndex:i] isEqualToString:@"Misc. Info."]) {
             
             [formElements addObject:
              [[NSMutableDictionary alloc] initWithObjectsAndKeys:
@@ -765,12 +763,18 @@
                 } else {
                     strElementValue = [swThisSwitch titleForSegmentAtIndex:swThisSwitch.selectedSegmentIndex];
                 }
+            
+            } else if ([[_arrAllElements objectAtIndex:i] isMemberOfClass:[OAI_TextView class]]) {
                 
+                    OAI_TextView* txtThisView = (OAI_TextView*)[_arrAllElements objectAtIndex:i];
+                    strElementKey = txtThisView.myLabel;
+                    strElementValue = txtThisView.text;
             }
             
             if (strElementValue == nil) {
                 strElementValue = @"No Entry";
             }
+            
             [dictProjectData setObject:strElementValue forKey:strElementKey];
             
         }

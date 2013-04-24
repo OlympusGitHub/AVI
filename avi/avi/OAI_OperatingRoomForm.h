@@ -48,6 +48,8 @@
     NSArray* arrLocationData;
     NSArray* arrLocationElementNames;
     NSMutableArray* arrLocationElements;
+    NSMutableArray* arrORElements;
+    NSArray* arrORLabels;
     
     OAI_TextField* txtProjectNumber;
     OAI_TextField* txtOperatingRoomID;

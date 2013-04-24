@@ -26,6 +26,8 @@
         dictRoomData = [[NSMutableDictionary alloc] init];
         arrLocationElements = [[NSMutableArray alloc] init];
         
+        arrORLabels = [[NSArray alloc] initWithObjects: @"Procedure Room ID", @"Length (ft)", @"Width (ft)", @"True Ceiling Height (ft)", @"False Ceiling Height (ft)", [[NSArray alloc] initWithObjects:@"Ceiling", @"Hatch", @"Drop Ceiling", @"Sealed", nil], @"Procedure Room Bldg.", @"Procedure Room Floor", @"Procedure Room Dept.", @"Procedure Room No.", @"Number of Monitors", @"Types of Monitors", @"Wall Location", nil];
+        
         isExistingRoom = NO;
         
         NSString* strInstructions = @"Select to either enter a new room or edit an existing one from the options below.";
@@ -65,7 +67,7 @@
             
             if (i==0) {
                 
-                NSArray* arrORLabels = [[NSArray alloc] initWithObjects: @"Procedure Room ID", @"Length (ft)", @"Width (ft)", @"True Ceiling Height (ft)", @"False Ceiling Height (ft)", [[NSArray alloc] initWithObjects:@"Ceiling", @"Hatch", @"Drop Ceiling", @"Sealed", nil], @"OR Building", @"Floor", @"Department", @"OR Number", @"Number of Monitors", @"Types of Monitors", @"Wall Location", nil];
+                
                 
                 UILabel* lblORProperties = [[UILabel alloc] initWithFrame:CGRectMake((thisScreen.frame.size.width/2)-200, 0.0, 400.0, 40.0)];
                 lblORProperties.text = @"Procedure Room Information";
@@ -579,15 +581,13 @@
 
 - (NSMutableDictionary*) parseORData : (NSMutableDictionary* ) dictORData : (NSString*) parseWhat {
     
-    
     NSMutableDictionary* parsedRoomData = [[NSMutableDictionary alloc] init];
     
     //loop through the dictionary
-    for(NSString* thisKey in dictORData) {
+    for(NSString* thisKey in dictRoomData) {
         
         //get each object
         if ([[dictORData objectForKey:thisKey] isMemberOfClass:[OAI_TextField class]]) {
-            
             OAI_TextField* txtThisTextField = (OAI_TextField*)[dictORData objectForKey:thisKey];
             
             if (txtThisTextField.text.length > 0) {
@@ -597,7 +597,7 @@
                         [parsedRoomData setObject:txtThisTextField.text forKey:thisKey];
                     }
                 } else {
-                    if (![arrLocationElementNames containsObject:thisKey]) {
+                    if ([arrORLabels containsObject:thisKey]) {
                         [parsedRoomData setObject:txtThisTextField.text forKey:thisKey];
                     }
                 }
@@ -636,6 +636,7 @@
         }
     }
     
+   NSLog(@"%@", parsedRoomData);
     return parsedRoomData;
 }
 

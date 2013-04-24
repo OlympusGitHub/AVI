@@ -15,6 +15,7 @@
 #import "OAI_SimpleCheckbox.h"
 #import "OAI_Checkbox.h"
 #import "OAI_States.h"
+#import "OAI_TextView.h"
 
 
 @interface OAI_DataManager : NSObject <UIAlertViewDelegate> {
