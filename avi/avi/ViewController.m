@@ -369,7 +369,7 @@
     
     [self.view addSubview:vGetContacts];
     
-    vAddProcedureRoom = [[OAI_ModalDisplay alloc] initWithFrame:CGRectMake(-600.0, -740.0, 600.0, 740.0)];
+    vAddProcedureRoom = [[OAI_ModalDisplay alloc] initWithFrame:CGRectMake(-600.0, -800.0, 600.0, 800.0)];
     vAddProcedureRoom.layer.shadowColor = [UIColor blackColor].CGColor;
     vAddProcedureRoom.layer.shadowOffset = CGSizeMake(2.0,2.0);
     vAddProcedureRoom.layer.shadowOpacity = .75;

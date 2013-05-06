@@ -37,20 +37,21 @@
         lblInstructions.text = strInstructions;
         lblInstructions.numberOfLines = 0;
         lblInstructions.lineBreakMode = NSLineBreakByWordWrapping;
+        lblInstructions.textAlignment = NSTextAlignmentCenter;
         lblInstructions.textColor = [colorManager setColor:66.0 :66.0 :66.0];
         lblInstructions.font = [UIFont fontWithName:@"Helvetica" size:18.0];
         lblInstructions.backgroundColor = [UIColor clearColor];
         [self addSubview:lblInstructions];
         
-        NSArray* arrSegmentTitles = [[NSArray alloc] initWithObjects:@"New Room", @"Edit Room", nil];
+        /*NSArray* arrSegmentTitles = [[NSArray alloc] initWithObjects:@"New Room", @"Edit Room", nil];
         scFormOptions = [[UISegmentedControl alloc] initWithItems:arrSegmentTitles];
         [scFormOptions setFrame:CGRectMake((self.frame.size.width/2)-(scFormOptions.frame.size.width/2), lblInstructions.frame.origin.y + lblInstructions.frame.size.height+10.0, scFormOptions.frame.size.width, 30.0)];
         [scFormOptions setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:@"Helvetica" size:16.0], UITextAttributeFont, nil] forState:UIControlStateNormal];
         [scFormOptions addTarget:self action:@selector(formDataManager:) forControlEvents:UIControlEventValueChanged];
         scFormOptions.tag = 120;
-        [self addSubview:scFormOptions];
+        [self addSubview:scFormOptions];*/
         
-        svFormViews = [[OAI_ScrollView alloc] initWithFrame:CGRectMake(10.0, scFormOptions.frame.origin.y + scFormOptions.frame.size.height + 15.0, self.frame.size.width-20.0, self.frame.size.height)];
+        svFormViews = [[OAI_ScrollView alloc] initWithFrame:CGRectMake(10.0, lblInstructions.frame.origin.y + lblInstructions.frame.size.height + 15.0, self.frame.size.width-20.0, self.frame.size.height)];
         [svFormViews setContentSize: CGSizeMake(self.frame.size.width*2, svFormViews.frame.size.height)];
         svFormViews.delegate = self;
         svFormViews.canCancelContentTouches = NO;
@@ -66,19 +67,17 @@
             UIView* thisScreen = [[UIView alloc] initWithFrame:CGRectMake(screenX, screenY, screenW, screenH)];
             
             if (i==0) {
-                
-                
-                
-                UILabel* lblORProperties = [[UILabel alloc] initWithFrame:CGRectMake((thisScreen.frame.size.width/2)-200, 0.0, 400.0, 40.0)];
+                                
+                /*UILabel* lblORProperties = [[UILabel alloc] initWithFrame:CGRectMake((thisScreen.frame.size.width/2)-200, 0.0, 400.0, 40.0)];
                 lblORProperties.text = @"Procedure Room Information";
                 lblORProperties.textColor = [colorManager setColor:66.0 :66.0 :66.0];
                 lblORProperties.font = [UIFont fontWithName:@"Helvetica-Bold" size:18.0];
                 lblORProperties.backgroundColor = [UIColor clearColor];
                 lblORProperties.textAlignment = NSTextAlignmentCenter;
-                [thisScreen addSubview:lblORProperties];
+                [thisScreen addSubview:lblORProperties];*/
 
                 float elementX = 40.0;
-                float elementY = lblORProperties.frame.origin.y + lblORProperties.frame.size.height + 10.0;
+                float elementY = 0.0;
                 float elementW = 200.0;
                 float elementH = 40.0;
                 
@@ -91,24 +90,26 @@
                            
                         }
                         
-                        OAI_TextField* thisTextField = [[OAI_TextField alloc] initWithFrame:CGRectMake(elementX, elementY, elementW, elementH)];
+                        //add the label
+                        NSString* strFieldLabel = [arrORLabels objectAtIndex:x];
+                        UILabel* lblFieldLabel = [[UILabel alloc] initWithFrame:CGRectMake(elementX, elementY, elementW, elementH)];
+                        lblFieldLabel.text = strFieldLabel;
+                        lblFieldLabel.textColor = [colorManager setColor:66.0 :66.0 :66.0];
+                        lblFieldLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:16.0];
+                        lblFieldLabel.backgroundColor = [UIColor clearColor];
+                        [thisScreen addSubview:lblFieldLabel];
                         
-                        thisTextField.placeholder = [arrORLabels objectAtIndex:x];
+                        //add the text field
+                        OAI_TextField* thisTextField = [[OAI_TextField alloc] initWithFrame:CGRectMake(elementX, lblFieldLabel.frame.origin.y + lblFieldLabel.frame.size.height, elementW, elementH)];
                         thisTextField.myLabel = [arrORLabels objectAtIndex:x];
                         thisTextField.tag = x;
                         thisTextField.delegate = self;
                         [thisScreen addSubview:thisTextField];
                         [dictRoomData setObject:thisTextField forKey:[arrORLabels objectAtIndex:x]];
-                        
-                        //601 indicates a numeric entry is needed
-                        /*if (x>0 && x<4) {
-                            thisTextField.tag = 601;
-                        } else if (x == 9 || x == 10) {
-                            thisTextField.tag = 601;
-                        }*/
                     
                     } else if (x == 5) {
                         
+                        //the ceiling tabs
                         elementY = elementY + 10.0;
                         
                         UILabel* lblCeiling = [[UILabel alloc] initWithFrame:CGRectMake(elementX, elementY, elementW, elementH)];
@@ -118,7 +119,6 @@
                         lblCeiling.backgroundColor = [UIColor clearColor];
                         [thisScreen addSubview:lblCeiling];
                         
-                     
                         scCeilingOptions = [[UISegmentedControl alloc] initWithItems:[[NSArray alloc] initWithObjects:@"Hatch", @"Drop Ceiling", @"Sealed", nil]];
                         [scCeilingOptions setFrame:CGRectMake(elementX, lblCeiling.frame.origin.y + lblCeiling.frame.size.height, 250.0, elementH)];
                         [scCeilingOptions setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:@"Helvetica" size:14.0], UITextAttributeFont, nil] forState:UIControlStateNormal];
@@ -127,11 +127,11 @@
                         [dictRoomData setObject:scCeilingOptions forKey:@"Ceiling:"];
                         
                         //reset y for the next column
-                         elementY = lblORProperties.frame.origin.y + lblORProperties.frame.size.height -40.0;
+                        elementY = -75.0;
                         
                     }
                     
-                    elementY = elementY + 50.0;
+                    elementY = elementY + 75.0;
                                         
                 }
                 

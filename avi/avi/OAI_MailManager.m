@@ -37,7 +37,7 @@
     NSDictionary* dictLocations = [_dictProjectData objectForKey:@"Locations"];
     NSDictionary* dictAccountData = [_dictProjectData objectForKey:@"Account Data"];
     
-    //NSLog(@"%@", _dictProjectData);
+    NSLog(@"%@", _dictProjectData);
     
     NSMutableString* strMailBody = [[NSMutableString alloc] initWithString:[NSString stringWithFormat:@"<div><p style=\"font-weight:900; color:#666; font-size:24px; font-family:Helvetica, Arial, sans-serif\">Site Integration Report for %@</p></div>", _strProjectNumber]];
     
@@ -118,7 +118,7 @@
     
     [strMailBody appendString:[NSString stringWithFormat:@"<tr><td colspan=\"2\" style=\"background:#666; color:#eee; padding:3px; font-weight: 900; font-size:20px;\">ENDOALPHA Control:</td><td></td></tr>"]];
     
-    [strMailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">Cabeling length does not exceed approx 130ft. between AV equipment to AVP Rack:</td><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">%@</td></tr>", strOddRowColor, strOddRowColor, [dictProject objectForKey:@"Cabeling length does not exceed approx 130ft. between AV equipment to AVP Rack:"]]];
+    [strMailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">Cabling length does not exceed approx 130ft. between AV equipment to AVP Rack:</td><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">%@</td></tr>", strOddRowColor, strOddRowColor, [dictProject objectForKey:@"Cabling length does not exceed approx 130ft. between AV equipment to AVP Rack:"]]];
     
     [strMailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">Hospital representative agreed to cable:</td><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">%@</td></tr>", strEvenRowColor, strEvenRowColor, [dictProject objectForKey:@"Hospital representative agreed to cable:"]]];
     
@@ -203,6 +203,13 @@
     for(NSString* strThisProRoom in dictProcedureRooms) {
         
         NSDictionary* dictThisRoom = [dictProcedureRooms objectForKey:strThisProRoom];
+        
+        NSString* strProcedureRoom = nil;
+        if ([dictThisRoom objectForKey:@"Procedure Room ID"] == nil) {
+            strProcedureRoom = @"No Entry";
+        } else {
+            strProcedureRoom = [dictThisRoom objectForKey:@"Procedure Room ID"];
+        }
         
         [strMailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">Procedure Room ID:</td><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">%@</td></tr>", strOddRowColor, strOddRowColor, [dictThisRoom objectForKey:@"Procedure Room ID"]]];
         
