@@ -30,7 +30,8 @@
         vModalBar.layer.shadowOffset = CGSizeMake(0.0, 2.0);
         vModalBar.layer.shadowOpacity = .75;
         
-        lblModalLabel = [[UILabel alloc] initWithFrame:CGRectMake((vModalBar.frame.size.width/2)-100.0, 10.0, 200.0, 40.0)];
+        
+        lblModalLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 10.0, 200.0, 40.0)];
         lblModalLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:24.0];
         lblModalLabel.text = @"Modal Test";
         lblModalLabel.textColor = [colorManager setColor:51.0 :51.0 :51.0];
@@ -57,6 +58,7 @@
     CGSize modalTitleSize = [strModalTitle sizeWithFont:[UIFont fontWithName:@"Helvetica-Bold" size:24.0]];
     CGRect lblModalLabelFrame = lblModalLabel.frame;
     lblModalLabelFrame.size.width = modalTitleSize.width;
+    lblModalLabelFrame.origin.x = (vModalBar.frame.size.width/2)-(modalTitleSize.width/2);
     lblModalLabel.frame = lblModalLabelFrame;
     
     
@@ -79,7 +81,21 @@
     } else if ([strModalTitle isEqualToString:@"Saved Projects"]) {
         savedProjects = [[OAI_DataList alloc] initWithFrame:CGRectMake(20.0, vModalBar.frame.origin.y + vModalBar.frame.size.height+10.0, self.frame.size.width-40.0, self.frame.size.height - vModalBar.frame.size.height)];
         [self addSubview:savedProjects];
+        
+    } else if ([strModalTitle isEqualToString:@"Saved Rooms"]) {
+        
+        savedRooms = [[OAI_ORList alloc] initWithFrame:CGRectMake(20.0, vModalBar.frame.origin.y + vModalBar.frame.size.height+10.0, self.frame.size.width-40.0, self.frame.size.height - vModalBar.frame.size.height)];
+        [self addSubview:savedRooms];
+        
     }
+}
+
+#pragma mark - Title Bar
+
+- (void) reloadTitleBar {
+    
+    savedRooms.strProjectNumber = _strProjectNumber; 
+    [savedRooms reloadTitleBar];
 }
 
 #pragma mark - Table Management
@@ -94,6 +110,10 @@
     } else if ([strModalTitle isEqualToString:@"Saved Projects"]) {
         savedProjects.arrDataList = _arrModalTableData;
         [savedProjects showData];
+        
+    } else if ([strModalTitle isEqualToString:@"Saved Rooms"]) {
+        savedRooms.arrORList = _arrModalTableData;
+        [savedRooms showData];
     }
 }
 

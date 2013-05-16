@@ -393,6 +393,17 @@
     
     [self.view addSubview:vSavedProjects];
     
+    vGetSavedRooms = [[OAI_ModalDisplay alloc] initWithFrame:CGRectMake(-400.0, -700.0, 400.0, 700.0)];
+    vGetSavedRooms.layer.shadowColor = [UIColor blackColor].CGColor;
+    vGetSavedRooms.layer.shadowOffset = CGSizeMake(2.0,2.0);
+    vGetSavedRooms.layer.shadowOpacity = .75;
+    vGetSavedRooms.strModalTitle = @"Saved Rooms";
+    vGetSavedRooms.alpha = 0.0;
+    
+    [vGetSavedRooms buildModal];
+    
+    [self.view addSubview:vGetSavedRooms];
+    
 }
 
 #pragma mark - Build Section Elements
@@ -594,6 +605,9 @@
                 } else if ([strBtnTitle isEqualToString:@"Add Procedure Room"]) {
                     imgBtn = [UIImage imageNamed:@"btnNewOR.png"];
                     strBtnAction = @"newProcedureRoom";
+                } else if ([strBtnTitle isEqualToString:@"Edit Procedure Room"]) {
+                    imgBtn = [UIImage imageNamed:@"btnPlaceHolder.png"];
+                    strBtnAction = @"editProcedureRoom";
                 }
                     
                 
@@ -604,7 +618,6 @@
                 btnThisButton.tag = tag;
                 [vSectionElements addSubview:btnThisButton];
 
-                
                 CGSize buttonLabelSize = [strBtnTitle sizeWithFont:[UIFont fontWithName:@"Helvetica" size:10.0]];
                 
                 UILabel* lblThisButton = [[UILabel alloc] initWithFrame:CGRectMake((btnThisButton.frame.origin.x+btnThisButton.frame.size.width/2)-(buttonLabelSize.width/2), btnThisButton.frame.origin.y+btnThisButton.frame.size.height + 4.0, buttonLabelSize.width, buttonLabelSize.height)];
@@ -615,9 +628,7 @@
                 lblThisButton.backgroundColor = [UIColor clearColor];
                 [vSectionElements addSubview:lblThisButton];
                 
-                
-                
-                elementX = elementX + 90.0;
+                elementX = elementX + 110.0;
                 
             }
             
@@ -763,7 +774,7 @@
             
             NSDictionary* dictThisContactData = [[notification userInfo] objectForKey:@"Contact Data"];
             
-            BOOL success = [dataManager checkContactData:dictThisContactData :projectNumber];
+            [dataManager checkContactData:dictThisContactData :projectNumber];
              
         } else if ([strAction isEqualToString:@"Show Contact Data"]) {
             
@@ -794,6 +805,9 @@
             }
             
         } else if ([strAction isEqualToString:@"Load OR"]) {
+            
+            [self animationManager:vGetSavedRooms :nil];
+            [self animationManager:vAddProcedureRoom :nil];
             
             vAddProcedureRoom.dictSavedORData = [[notification userInfo] objectForKey:@"OR Data"];
             [vAddProcedureRoom loadORData];
@@ -959,6 +973,21 @@
     vGetContacts.strProjectNumber = projectNumber;
     vGetContacts.arrModalTableData = arrContacts;
     [vGetContacts reloadTableData];
+    
+}
+
+- (void) displaySavedRooms : (NSDictionary* ) dictSavedRooms {
+    
+    NSMutableArray* arrSavedRoomTitles = [[NSMutableArray alloc] init];
+    for(NSString* strThisKey in dictSavedRooms) {
+        [arrSavedRoomTitles addObject:strThisKey];
+    }
+    
+    vGetSavedRooms.strProjectNumber = projectNumber;
+    vGetSavedRooms.arrModalTableData = arrSavedRoomTitles;
+    vGetSavedRooms.dictSavedORData = dictSavedRooms;
+    [vGetSavedRooms reloadTitleBar];
+    [vGetSavedRooms reloadTableData];
     
 }
 
@@ -1148,6 +1177,7 @@
         NSDictionary* dictContactData = [fileManager readPlist:strContactPath];
         NSDictionary* dictProcedureData = [fileManager readPlist:strProcedurePath];
         NSDictionary* dictAccountData = [fileManager readPlist:@"UserAccount.plist"];
+        NSLog(@"%@", dictProcedureData);
         
         if (dictAccountData.count == 0) {
             isValid = NO;
@@ -1198,6 +1228,7 @@
             }
             
             //check the AVP/UCES/UCES+ checkboxes
+            
             
             
             if (!isValid) {
@@ -1406,6 +1437,21 @@
         } else if (myTag == 103) {
             
             thisModal = vAddProcedureRoom;
+            
+        } else if (myTag == 104) {
+            
+            thisModal = vGetSavedRooms;
+            
+            NSDictionary* dictSavedRooms = [fileManager readPlist:[NSString stringWithFormat:@"%@/OperatingRooms.plist", projectNumber]];
+            
+            if (dictSavedRooms.count == 0) {
+                hasError = YES;
+                strErrMsg = @"There are no saved rooms to edit.";
+            } else {
+                
+                [self displaySavedRooms:dictSavedRooms];
+            }
+            
         }
         
         //if there are no errors show animation, otherwise show alert
@@ -1422,6 +1468,7 @@
              cancelButtonTitle: @"OK"
              otherButtonTitles: nil];
             [alert show];
+       
         }
         
     } else {

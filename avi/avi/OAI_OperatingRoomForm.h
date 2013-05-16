@@ -22,9 +22,11 @@
 #import "OAI_ORList.h"
 #import "OAI_LocationList.h"
 
+
 @interface OAI_OperatingRoomForm : UIView  <UIScrollViewDelegate, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIAlertViewDelegate> {
     
     BOOL isExistingRoom;
+    BOOL loadingData; 
     
     OAI_ColorManager* colorManager;
     OAI_FileManager* fileManager;
@@ -60,6 +62,13 @@
     NSMutableDictionary* parsedORData;
     NSString* strThisORID;
     NSString* strThisLocationID;
+    
+    UIView* vAddAMonitor;
+    NSString* strMonitorType;
+    NSMutableArray* arrMonitors;
+    UITableView* tblMonitors;
+    NSString* strSelectedMonitor;
+
     
 }
 
@@ -100,8 +109,6 @@
 
 - (void) loadLocationData : (NSString*) resetWhat;
 
-- (void) showThumbnails : (UIButton*) myButton;
-
 - (void) setParent : (UIView*) parentView;
 
 - (void) toggleElements;
@@ -110,8 +117,13 @@
 
 - (void) checkForORID;
 
+- (void) showMonitorModal : (UIButton*) myButton;
 
+- (void) closeMonitor : (UIButton*) myButton;
 
+- (void) deleteMonitorCheck : (UIButton*) myButton;
+
+- (void) deleteMonitor;
 
 
 @end

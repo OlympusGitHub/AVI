@@ -38,7 +38,9 @@
 		DB3F8DE61721A91F00CD43E2 /* OA_img_logo_pdf.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A5D1709F776001AA190 /* OA_img_logo_pdf.png */; };
 		DB3F8DE71721A91F00CD43E2 /* OA_logo_black_topbar.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0C1A5E1709F776001AA190 /* OA_logo_black_topbar.png */; };
 		DB3F8DEA1721B0E600CD43E2 /* OAI_SetTabOrder.m in Sources */ = {isa = PBXBuildFile; fileRef = DB3F8DE91721B0E600CD43E2 /* OAI_SetTabOrder.m */; };
+		DB5AF90A173C06C20017BA7C /* btnDelete.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DB5AF909173C06C20017BA7C /* btnDelete.jpg */; };
 		DB9C4963171F17620016BF6D /* OAI_MailManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DB9C4962171F17620016BF6D /* OAI_MailManager.m */; };
+		DBA82C4C17394F0E00E3E8AB /* btnPlaceHolder.png in Resources */ = {isa = PBXBuildFile; fileRef = DBA82C4B17394F0E00E3E8AB /* btnPlaceHolder.png */; };
 		DBD8CF0B171C3DA700B4006D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB0C1A141709F6F0001AA190 /* UIKit.framework */; };
 		DBD8CF0C171C3DA700B4006D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB0C1A161709F6F0001AA190 /* Foundation.framework */; };
 		DBD8CF0D171C3DA700B4006D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB0C1A181709F6F0001AA190 /* CoreGraphics.framework */; };
@@ -201,8 +203,10 @@
 		DB0C1AE91709F8A9001AA190 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		DB3F8DE81721B0E600CD43E2 /* OAI_SetTabOrder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAI_SetTabOrder.h; sourceTree = "<group>"; };
 		DB3F8DE91721B0E600CD43E2 /* OAI_SetTabOrder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAI_SetTabOrder.m; sourceTree = "<group>"; };
+		DB5AF909173C06C20017BA7C /* btnDelete.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = btnDelete.jpg; sourceTree = "<group>"; };
 		DB9C4961171F17620016BF6D /* OAI_MailManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAI_MailManager.h; sourceTree = "<group>"; };
 		DB9C4962171F17620016BF6D /* OAI_MailManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAI_MailManager.m; sourceTree = "<group>"; };
+		DBA82C4B17394F0E00E3E8AB /* btnPlaceHolder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = btnPlaceHolder.png; sourceTree = "<group>"; };
 		DBD8CF03171C262800B4006D /* OAI_TextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAI_TextView.h; sourceTree = "<group>"; };
 		DBD8CF04171C262800B4006D /* OAI_TextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAI_TextView.m; sourceTree = "<group>"; };
 		DBD8CF0A171C3DA700B4006D /* avi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = avi.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -306,6 +310,8 @@
 		DB0C1A3F1709F755001AA190 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				DB5AF909173C06C20017BA7C /* btnDelete.jpg */,
+				DBA82C4B17394F0E00E3E8AB /* btnPlaceHolder.png */,
 				DB0C1A431709F776001AA190 /* imgENDOALPHA.png */,
 				DB0C1A441709F776001AA190 /* btnEmailIconNormal.png */,
 				DB0C1A451709F776001AA190 /* btnSaveIconNormal.png */,
@@ -561,6 +567,8 @@
 				DBD8CF24171C3DD200B4006D /* aviIcon@2x.png in Resources */,
 				DB3F8DCA17203CAA00CD43E2 /* Default-Portrait~ipad.png in Resources */,
 				DB3F8DCB17203CB000CD43E2 /* Default-Portrait@2x~ipad.png in Resources */,
+				DBA82C4C17394F0E00E3E8AB /* btnPlaceHolder.png in Resources */,
+				DB5AF90A173C06C20017BA7C /* btnDelete.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -713,6 +721,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "avi/avi-Prefix.pch";
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = "avi/avi-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -726,6 +735,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "avi/avi-Prefix.pch";
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = "avi/avi-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";

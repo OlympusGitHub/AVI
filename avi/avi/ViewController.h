@@ -82,6 +82,7 @@
     OAI_ModalDisplay* vGetContacts;
     OAI_ModalDisplay* vAddProcedureRoom;
     OAI_ModalDisplay* vSavedProjects;
+    OAI_ModalDisplay* vGetSavedRooms;
     
     UIDatePicker* datePicker;
     NSDate* thisDate;
@@ -123,7 +124,9 @@
 
 - (void) datePickerValueChanged : (id) myDatePicker;
 
-- (void) showSavedProject : (UIButton*) myButton; 
+- (void) showSavedProject : (UIButton*) myButton;
+
+- (void) displaySavedRooms : (NSDictionary* ) dictSavedRooms;
 
 
 

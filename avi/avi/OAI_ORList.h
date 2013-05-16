@@ -19,10 +19,11 @@
     OAI_FileManager* fileManager;
     NSString* strORListName;
     UITableView* tblORList;
+    UILabel* lblORData;
 }
 
 @property (nonatomic, retain) NSArray* arrORList;
-@property (nonatomic, retain) NSString* projectNumber;
+@property (nonatomic, retain) NSString* strProjectNumber;
 @property (nonatomic, retain) NSDictionary* dictORData;
 
 - (void) sendNotice : (UIButton*) myButton;
@@ -33,7 +34,7 @@
 
 - (void) loadRoom : (UIButton*) myButton;
 
-- (void) resetFormTabs;
+- (void) reloadTitleBar; 
 
 
 @end

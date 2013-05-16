@@ -25,8 +25,9 @@
         arrExisitingRooms = [[NSMutableArray alloc] init];
         dictRoomData = [[NSMutableDictionary alloc] init];
         arrLocationElements = [[NSMutableArray alloc] init];
+        arrMonitors = [[NSMutableArray alloc] init];
         
-        arrORLabels = [[NSArray alloc] initWithObjects: @"Procedure Room ID", @"Length (ft)", @"Width (ft)", @"True Ceiling Height (ft)", @"False Ceiling Height (ft)", [[NSArray alloc] initWithObjects:@"Ceiling", @"Hatch", @"Drop Ceiling", @"Sealed", nil], @"Procedure Room Bldg.", @"Procedure Room Floor", @"Procedure Room Dept.", @"Procedure Room No.", @"Number of Monitors", @"Types of Monitors", @"Wall Location", nil];
+        arrORLabels = [[NSArray alloc] initWithObjects: @"Procedure Room ID", @"Length (ft)", @"Width (ft)", @"True Ceiling Height (ft)", @"False Ceiling Height (ft)", @"Ceiling", @"Procedure Room Bldg.", @"Procedure Room Floor", @"Procedure Room Dept.", @"Procedure Room No.",  @"Wall Location", nil];
         
         isExistingRoom = NO;
         
@@ -42,14 +43,6 @@
         lblInstructions.font = [UIFont fontWithName:@"Helvetica" size:18.0];
         lblInstructions.backgroundColor = [UIColor clearColor];
         [self addSubview:lblInstructions];
-        
-        /*NSArray* arrSegmentTitles = [[NSArray alloc] initWithObjects:@"New Room", @"Edit Room", nil];
-        scFormOptions = [[UISegmentedControl alloc] initWithItems:arrSegmentTitles];
-        [scFormOptions setFrame:CGRectMake((self.frame.size.width/2)-(scFormOptions.frame.size.width/2), lblInstructions.frame.origin.y + lblInstructions.frame.size.height+10.0, scFormOptions.frame.size.width, 30.0)];
-        [scFormOptions setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:@"Helvetica" size:16.0], UITextAttributeFont, nil] forState:UIControlStateNormal];
-        [scFormOptions addTarget:self action:@selector(formDataManager:) forControlEvents:UIControlEventValueChanged];
-        scFormOptions.tag = 120;
-        [self addSubview:scFormOptions];*/
         
         svFormViews = [[OAI_ScrollView alloc] initWithFrame:CGRectMake(10.0, lblInstructions.frame.origin.y + lblInstructions.frame.size.height + 15.0, self.frame.size.width-20.0, self.frame.size.height)];
         [svFormViews setContentSize: CGSizeMake(self.frame.size.width*2, svFormViews.frame.size.height)];
@@ -67,38 +60,31 @@
             UIView* thisScreen = [[UIView alloc] initWithFrame:CGRectMake(screenX, screenY, screenW, screenH)];
             
             if (i==0) {
-                                
-                /*UILabel* lblORProperties = [[UILabel alloc] initWithFrame:CGRectMake((thisScreen.frame.size.width/2)-200, 0.0, 400.0, 40.0)];
-                lblORProperties.text = @"Procedure Room Information";
-                lblORProperties.textColor = [colorManager setColor:66.0 :66.0 :66.0];
-                lblORProperties.font = [UIFont fontWithName:@"Helvetica-Bold" size:18.0];
-                lblORProperties.backgroundColor = [UIColor clearColor];
-                lblORProperties.textAlignment = NSTextAlignmentCenter;
-                [thisScreen addSubview:lblORProperties];*/
 
                 float elementX = 40.0;
                 float elementY = 0.0;
                 float elementW = 200.0;
-                float elementH = 40.0;
+                float elementH = 30.0;
                 
                 for (int x=0; x<arrORLabels.count; x++) {
                     
-                    if (x != 5) {
+                    if (x>5) {
+                        elementX = thisScreen.frame.size.width -230;
+                    }
+                    
+                    //add the label
+                    NSString* strFieldLabel = [arrORLabels objectAtIndex:x];
+                    
+                    //filter for the add monitor button
+                    if(![strFieldLabel isEqualToString:@"Ceiling"]) { 
                         
-                        if (x>5) {
-                            elementX = thisScreen.frame.size.width -230;
-                           
-                        }
-                        
-                        //add the label
-                        NSString* strFieldLabel = [arrORLabels objectAtIndex:x];
                         UILabel* lblFieldLabel = [[UILabel alloc] initWithFrame:CGRectMake(elementX, elementY, elementW, elementH)];
                         lblFieldLabel.text = strFieldLabel;
                         lblFieldLabel.textColor = [colorManager setColor:66.0 :66.0 :66.0];
-                        lblFieldLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:16.0];
+                        lblFieldLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:14.0];
                         lblFieldLabel.backgroundColor = [UIColor clearColor];
                         [thisScreen addSubview:lblFieldLabel];
-                        
+                    
                         //add the text field
                         OAI_TextField* thisTextField = [[OAI_TextField alloc] initWithFrame:CGRectMake(elementX, lblFieldLabel.frame.origin.y + lblFieldLabel.frame.size.height, elementW, elementH)];
                         thisTextField.myLabel = [arrORLabels objectAtIndex:x];
@@ -106,32 +92,67 @@
                         thisTextField.delegate = self;
                         [thisScreen addSubview:thisTextField];
                         [dictRoomData setObject:thisTextField forKey:[arrORLabels objectAtIndex:x]];
-                    
-                    } else if (x == 5) {
                         
-                        //the ceiling tabs
-                        elementY = elementY + 10.0;
+                    } else {
                         
-                        UILabel* lblCeiling = [[UILabel alloc] initWithFrame:CGRectMake(elementX, elementY, elementW, elementH)];
-                        lblCeiling.text = @"Ceiling:";
+                        NSString* strCeiling = @"Ceiling:";
+                        CGSize ceilingSize = [strCeiling sizeWithFont:[UIFont fontWithName:@"Helvetica-Bold" size:16.0]];
+                        UILabel* lblCeiling = [[UILabel alloc] initWithFrame:CGRectMake((thisScreen.frame.size.width/2)-(ceilingSize.width/2), elementY, elementW, elementH)];
+                        lblCeiling.text = strCeiling;
                         lblCeiling.textColor = [colorManager setColor:66.0 :66.0 :66.0];
                         lblCeiling.font = [UIFont fontWithName:@"Helvetica-Bold" size:16.0];
                         lblCeiling.backgroundColor = [UIColor clearColor];
                         [thisScreen addSubview:lblCeiling];
                         
                         scCeilingOptions = [[UISegmentedControl alloc] initWithItems:[[NSArray alloc] initWithObjects:@"Hatch", @"Drop Ceiling", @"Sealed", nil]];
-                        [scCeilingOptions setFrame:CGRectMake(elementX, lblCeiling.frame.origin.y + lblCeiling.frame.size.height, 250.0, elementH)];
+                        [scCeilingOptions setFrame:CGRectMake((thisScreen.frame.size.width/2)-150.0, lblCeiling.frame.origin.y + lblCeiling.frame.size.height, 300.0, elementH)];
                         [scCeilingOptions setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:@"Helvetica" size:14.0], UITextAttributeFont, nil] forState:UIControlStateNormal];
                         scCeilingOptions.tag = 602;
                         [thisScreen addSubview:scCeilingOptions];
                         [dictRoomData setObject:scCeilingOptions forKey:@"Ceiling:"];
                         
+                        NSString* strMonitors = @"Monitors:";
+                        CGSize monitorsSize = [strMonitors sizeWithFont:[UIFont fontWithName:@"Helvetica-Bold" size:16.0]];
+                        UILabel* lblMonitors = [[UILabel alloc] initWithFrame:CGRectMake((thisScreen.frame.size.width/2)-(monitorsSize.width/2), scCeilingOptions.frame.origin.y + scCeilingOptions.frame.size.height + 10.0, monitorsSize.width, monitorsSize.height)];
+                        lblMonitors.text = strMonitors;
+                        lblMonitors.textColor = [colorManager setColor:66.0 :66.0 :66.0];
+                        lblMonitors.font = [UIFont fontWithName:@"Helvetica-Bold" size:16.0];
+                        lblMonitors.backgroundColor = [UIColor clearColor];
+                        [thisScreen addSubview:lblMonitors];
+                                                
+                        tblMonitors = [[UITableView alloc] initWithFrame:CGRectMake((thisScreen.frame.size.width/2)-150.0, lblMonitors.frame.origin.y + lblMonitors.frame.size.height + 10.0, 300.0, 100.0)];
+                        tblMonitors.rowHeight = 30.0;
+                        tblMonitors.delegate = self;
+                        tblMonitors.dataSource = self;
+                        tblMonitors.layer.borderWidth = 1.0;
+                        [thisScreen addSubview:tblMonitors];
+                        
+                        UIButton* btnAddMonitor = [UIButton buttonWithType:UIButtonTypeContactAdd];
+                        [btnAddMonitor setFrame:CGRectMake(tblMonitors.frame.origin.x - 60.0, tblMonitors.frame.origin.y, 40.0, 40.0)];
+                        [btnAddMonitor addTarget:self action:@selector(showMonitorModal:) forControlEvents:UIControlEventTouchUpInside];
+                        [thisScreen addSubview:btnAddMonitor];
+                        
+                        UIButton* btnRoomLocation = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+                        [btnRoomLocation setFrame:CGRectMake((thisScreen.frame.size.width/2)-150.0, tblMonitors.frame.origin.y + tblMonitors.frame.size.height + 10.0, 300.0, 30.0)];
+                        [btnRoomLocation setTitle:@"Other Room Location" forState:UIControlStateNormal];
+                        btnRoomLocation.titleLabel.textColor = [colorManager setColor:8.0 :16.0 :123.0];
+                        btnRoomLocation.titleLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:16.0];
+                        btnRoomLocation.tag = 401;
+                        [btnRoomLocation addTarget:self action:@selector(scrollByButton:) forControlEvents:UIControlEventTouchUpInside];
+                        [thisScreen addSubview:btnRoomLocation];
+                        
                         //reset y for the next column
-                        elementY = -75.0;
+                        elementY = -65.0;
+                        
+                        /*UIButton* btnAddMonitor = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+                        [btnAddMonitor setFrame:CGRectMake(elementX, elementY+30.0, elementW, elementH)];
+                        [btnAddMonitor setTitle:@"Add Monitor" forState:UIControlStateNormal];
+                        [btnAddMonitor addTarget:self action:@selector(showMonitorModal:) forControlEvents:UIControlEventTouchUpInside];
+                        [thisScreen addSubview:btnAddMonitor];*/
                         
                     }
-                    
-                    elementY = elementY + 75.0;
+                                       
+                    elementY = elementY + 65.0;
                                         
                 }
                 
@@ -149,17 +170,9 @@
                 [btnThumbnails setFrame:CGRectMake(btnCamera.frame.origin.x, btnCamera.frame.origin.y + btnCamera.frame.size.height + 10.0, 40.0, 40.0)];
                 [btnThumbnails addTarget:self action:@selector(showThumbnails:) forControlEvents:UIControlEventTouchUpInside];
                 [thisScreen addSubview:btnThumbnails];*/
-                 
                 
-                UIButton* btnRoomLocation = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-                [btnRoomLocation setFrame:CGRectMake((thisScreen.frame.size.width/2)-150.0, scCeilingOptions.frame.origin.y + scCeilingOptions.frame.size.height + 30.0, 300.0, 30.0)];
-                [btnRoomLocation setTitle:@"Other Room Location" forState:UIControlStateNormal];
-                btnRoomLocation.titleLabel.textColor = [colorManager setColor:8.0 :16.0 :123.0];
-                btnRoomLocation.titleLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:16.0];
-                btnRoomLocation.tag = 401;
-                [btnRoomLocation addTarget:self action:@selector(scrollByButton:) forControlEvents:UIControlEventTouchUpInside];
-                [thisScreen addSubview:btnRoomLocation];
-
+                //table for monitors
+                
             } else if (i==1) {
                 
                 UILabel* lblLocationInformation = [[UILabel alloc] initWithFrame:CGRectMake((thisScreen.frame.size.width/2)-200, 0.0, 400.0, 40.0)];
@@ -173,7 +186,7 @@
                 float elementX = (thisScreen.frame.size.width/2)-150.0;
                 float elementY = lblLocationInformation.frame.origin.y + lblLocationInformation.frame.size.height + 10.0;
                 float elementW = 300.0;
-                float elementH = 40.0;
+                float elementH = 30.0;
             
                 arrLocationData = [[NSArray alloc] initWithObjects:@"Location ID", @"Other Location Building", @"Floor", @"Department", @"Name of Room", @"Distance From OR (ft)", [[NSArray alloc] initWithObjects:@"Signal Connection", @"Type", nil], [[NSArray alloc] initWithObjects:@"Network", @"Type", nil], [[NSArray alloc] initWithObjects:@"AV Equipment", @"Type", nil],
                 nil];
@@ -218,9 +231,16 @@
                     
                     if (x<6) {
                         
-                        OAI_TextField* thisTextField = [[OAI_TextField alloc] initWithFrame:CGRectMake(elementX, elementY, elementW, elementH)];
+                        //add the label
+                        NSString* strFieldLabel = [arrLocationData objectAtIndex:x];
+                        UILabel* lblFieldLabel = [[UILabel alloc] initWithFrame:CGRectMake(elementX, elementY, elementW, elementH)];
+                        lblFieldLabel.text = strFieldLabel;
+                        lblFieldLabel.textColor = [colorManager setColor:66.0 :66.0 :66.0];
+                        lblFieldLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:14.0];
+                        lblFieldLabel.backgroundColor = [UIColor clearColor];
+                        [thisScreen addSubview:lblFieldLabel];
                         
-                        thisTextField.placeholder = [arrLocationData objectAtIndex:x];
+                        OAI_TextField* thisTextField = [[OAI_TextField alloc] initWithFrame:CGRectMake(elementX, lblFieldLabel.frame.origin.y + lblFieldLabel.frame.size.height, elementW, elementH)];
                         thisTextField.myLabel = [arrLocationData objectAtIndex:x];
                         thisTextField.delegate = self;
                         thisTextField.tag = x;
@@ -239,10 +259,10 @@
                         
                         NSArray* arrSplitData = [arrLocationData objectAtIndex:x];
                         
-                        UILabel* lblCheckboxTitle = [[UILabel alloc] initWithFrame:CGRectMake(elementX, elementY, maxLabelWidth, elementH)];
+                        UILabel* lblCheckboxTitle = [[UILabel alloc] initWithFrame:CGRectMake(elementX, elementY+5.0, maxLabelWidth, elementH)];
                         lblCheckboxTitle.text = [arrSplitData objectAtIndex:0];
                         lblCheckboxTitle.textColor = [colorManager setColor:66.0 :66.0 :66.0];
-                        lblCheckboxTitle.font = [UIFont fontWithName:@"Helvetica" size:18.0];
+                        lblCheckboxTitle.font = [UIFont fontWithName:@"Helvetica" size:14.0];
                         lblCheckboxTitle.backgroundColor = [UIColor clearColor];
 
                         [thisScreen addSubview:lblCheckboxTitle];
@@ -265,7 +285,7 @@
                             
                     }
                     
-                    elementY = elementY + 50.0;
+                    elementY = elementY + 65.0;
                 }
                 
                 UIButton* btnBackToOR = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -324,7 +344,7 @@
         listManager.backgroundColor = [UIColor whiteColor];
         listManager.alpha = 0.0;
         listManager.tag = 101;
-        listManager.projectNumber = projectNumber;
+        listManager.strProjectNumber = projectNumber;
         [self addSubview:listManager];
         
         locationManager = [[OAI_LocationList alloc] initWithFrame:CGRectMake(-350.0, -600.0, 350.0, 600.0)];
@@ -333,6 +353,30 @@
         locationManager.tag = 101;
         locationManager.projectNumber = projectNumber;
         [self addSubview:locationManager];
+        
+        vAddAMonitor = [[UIView alloc] initWithFrame:CGRectMake((self.frame.size.width/2)-190, 100.0, 340.0, 60.0)];
+        vAddAMonitor.backgroundColor = [UIColor whiteColor];
+        vAddAMonitor.layer.shadowColor = [UIColor blackColor].CGColor;
+        vAddAMonitor.layer.shadowOffset = CGSizeMake(2.0, 2.0);
+        vAddAMonitor.layer.shadowOpacity = .75;
+        vAddAMonitor.alpha = 0.0;
+        
+        UITextField* txtMonitor = [[UITextField alloc] initWithFrame:CGRectMake((vAddAMonitor.frame.size.width/2)-120.0, 15.0, 240.0, 30.0)];
+        txtMonitor.placeholder = @"Monitor Type";
+        txtMonitor.backgroundColor = [UIColor whiteColor];
+        txtMonitor.borderStyle = UITextBorderStyleRoundedRect;
+        txtMonitor.font = [UIFont fontWithName:@"Helvetica" size:14.0];
+        txtMonitor.tag = 100;
+        txtMonitor.delegate = self;
+        [vAddAMonitor addSubview:txtMonitor];
+        
+        UIButton* btnClose = [UIButton buttonWithType:UIButtonTypeCustom];
+        [btnClose setImage:[UIImage imageNamed:@"btnCloseX"] forState:UIControlStateNormal];
+        [btnClose setFrame:CGRectMake(vAddAMonitor.frame.size.width-45.0, vAddAMonitor.frame.size.height - 45.0, 40.0, 40.0)];
+        [btnClose addTarget:self action:@selector(closeMonitor:) forControlEvents:UIControlEventTouchUpInside];
+        [vAddAMonitor addSubview:btnClose];
+        
+        [self addSubview:vAddAMonitor];
         
         
     }
@@ -352,11 +396,10 @@
     parsedORData = [self parseORData:dictRoomData:@"OR"];
     saveORData = [[NSMutableDictionary alloc] init];
     
-    
     [self checkForProjectNumber];
 
     //reset the tabs
-    scFormOptions.selectedSegmentIndex = -1;
+    //scFormOptions.selectedSegmentIndex = -1;
 
     //validate that a project was selected
     if (projectNumber.length == 0 ) {
@@ -374,9 +417,10 @@
             
         } else {
             
+            //put the new room into existing OR plist data
             [saveORData setObject:parsedORData forKey:txtOperatingRoomID.text];
             
-            //get the plist for this room
+            //get the OR plist
             dictSavedRoomData = [fileManager readPlist:[NSString stringWithFormat:@"%@/OperatingRooms.plist", projectNumber]];
             
             //plist doesn't exist so save data
@@ -579,6 +623,8 @@
     
 }
 
+//this method gathers the information for a room (procedure or off site location) and stores and returns a dictionary of that data
+
 - (NSMutableDictionary*) parseORData : (NSMutableDictionary* ) dictORData : (NSString*) parseWhat {
     
     NSMutableDictionary* parsedRoomData = [[NSMutableDictionary alloc] init];
@@ -588,21 +634,28 @@
         
         //get each object
         if ([[dictORData objectForKey:thisKey] isMemberOfClass:[OAI_TextField class]]) {
+            
             OAI_TextField* txtThisTextField = (OAI_TextField*)[dictORData objectForKey:thisKey];
             
-            if (txtThisTextField.text.length > 0) {
-                
-                if ([parseWhat isEqualToString:@"Location"]) {
-                    if ([arrLocationElementNames containsObject:thisKey]) { 
-                        [parsedRoomData setObject:txtThisTextField.text forKey:thisKey];
-                    }
-                } else {
-                    if ([arrORLabels containsObject:thisKey]) {
-                        [parsedRoomData setObject:txtThisTextField.text forKey:thisKey];
-                    }
-                }
+            NSString* strValue = txtThisTextField.text;
+            if (strValue == nil || strValue.length == 0 || [strValue isEqualToString:@""]) {
+                strValue = @"No Entry";
             }
             
+            
+                
+            if ([parseWhat isEqualToString:@"Location"]) {
+                if ([arrLocationElementNames containsObject:thisKey]) { 
+                    [parsedRoomData setObject:strValue forKey:thisKey];
+                }
+            } else {
+                if ([arrORLabels containsObject:thisKey]) {
+                    [parsedRoomData setObject:strValue forKey:thisKey];
+                }
+            }
+           
+            
+                       
         } else if ([[dictORData objectForKey:thisKey] isMemberOfClass:[OAI_SimpleCheckbox class]]) {
             
             OAI_SimpleCheckbox* chkThisCheckbox = (OAI_SimpleCheckbox*)[dictORData objectForKey:thisKey];
@@ -636,7 +689,12 @@
         }
     }
     
-   NSLog(@"%@", parsedRoomData);
+    //add monitors to the dictionary
+    if ([parseWhat isEqualToString:@"OR"]) {
+        [parsedRoomData setObject:arrMonitors forKey:@"Monitors"];
+    }
+    
+    //NSLog(@"%@", parsedRoomData);
     return parsedRoomData;
 }
 
@@ -645,24 +703,23 @@
     //make new dictionary
     NSMutableDictionary* dictNewData = [[NSMutableDictionary alloc] init];
     
-    //reset the tabs
-    scFormOptions.selectedSegmentIndex = -1;
-    
-    //loop through the saved data
     for(NSString* strThisKey in dictSavedRoomData) {
         
-        if (![strThisKey isEqualToString:txtOperatingRoomID.text]) { 
-        
+        if (![strThisKey isEqualToString:txtOperatingRoomID.text]) {
+            
             NSDictionary* dictThisOR = [dictSavedRoomData objectForKey:strThisKey];
             [dictNewData setObject:dictThisOR forKey:strThisKey];
+            
         }
     }
     
     [dictNewData setObject:parsedORData forKey:txtOperatingRoomID.text];
     
-    [fileManager writeToPlist:[NSString stringWithFormat:@"%@/OperatingRooms.plist", projectNumber] :saveORData];
+
+    [fileManager writeToPlist:[NSString stringWithFormat:@"%@/OperatingRooms.plist", projectNumber] :dictNewData];
     
     [self showAlert:@"Procedure Room Saved!" :[NSString stringWithFormat:@"The data for operating room %@ has been saved", txtOperatingRoomID.text] :nil :NO];
+
     
 }
 
@@ -670,28 +727,28 @@
     
     [self endEditing:YES];
     
-    //get the pro room list view
-    CGRect listManagerFrame = listManager.frame;
-    listManagerFrame.origin.x = 0-listManagerFrame.size.width;
-    listManagerFrame.origin.y = 0-listManagerFrame.size.height;
-    
     //close the proroom list
     [UIView animateWithDuration:0.4
           delay:0
         options:UIViewAnimationOptionCurveEaseIn
 
      animations:^(void){
-         listManager.alpha = 0.0;
+         self.alpha = 1.0;
      }
 
      completion:^(BOOL Finished){
          //move off screen
-         listManager.frame = listManagerFrame;
      }
     ];
 
     
+    
     for(NSString* strThisKey in _dictSavedORData) {
+        
+        if ([strThisKey isEqualToString:@"Monitors"]) {
+            arrMonitors = [[_dictSavedORData objectForKey:strThisKey] mutableCopy];
+            [tblMonitors reloadData];
+        }
         
         //get the value
         NSString* strThisValue = [_dictSavedORData objectForKey:strThisKey];
@@ -708,7 +765,7 @@
                     
                 } else if ([[dictRoomData objectForKey:strThisElement] isMemberOfClass:[OAI_Checkbox class]]) {
                     
-                    OAI_Checkbox* thisCheckbox = (OAI_Checkbox*)[dictRoomData objectForKey:strThisElement];
+                    //OAI_Checkbox* thisCheckbox = (OAI_Checkbox*)[dictRoomData objectForKey:strThisElement];
                     
                     if ([strThisValue isEqualToString:@"YES"]) {
                     } else {
@@ -716,12 +773,12 @@
                          
                 } else if ([[dictRoomData objectForKey:strThisElement] isMemberOfClass:[OAI_SimpleCheckbox class]]) {
                     
-                    OAI_SimpleCheckbox* thisCheckbox = (OAI_SimpleCheckbox*)[dictRoomData objectForKey:strThisElement];
+                    //OAI_SimpleCheckbox* thisCheckbox = (OAI_SimpleCheckbox*)[dictRoomData objectForKey:strThisElement];
                     
                     
                 } else if ([[dictRoomData objectForKey:strThisElement] isMemberOfClass:[UITableView class]]) {
                     
-                    UITableView* tblThisTable = (UITableView*)[dictRoomData objectForKey:strThisElement];
+                    //UITableView* tblThisTable = (UITableView*)[dictRoomData objectForKey:strThisElement];
                     
                     
                 } else if ([[dictRoomData objectForKey:strThisElement] isMemberOfClass:[OAI_Switch class]]) {
@@ -756,6 +813,7 @@
     NSArray* arrSiteInspectionElements = vSection.subviews;
     txtProjectNumber = [arrSiteInspectionElements objectAtIndex:1];
     projectNumber = txtProjectNumber.text;
+    
 }
 
 - (void) checkForORID {
@@ -799,7 +857,7 @@
             
             listManager.arrORList = dictORData.allKeys;
             listManager.dictORData = dictORData;
-            listManager.projectNumber = projectNumber;
+            listManager.strProjectNumber = projectNumber;
             
             [listManager showData];
             
@@ -1115,6 +1173,14 @@
         }else {
             overwriteData = NO;
         }
+    } else if (actionSheet.tag == 422) {
+        if (buttonIndex == 0) {
+            NSLog(@"reset array");
+        }
+    } else if (actionSheet.tag == 424) {
+        if (buttonIndex == 0) {
+            [self deleteMonitor];
+        }
     } else {
         //just sit here and do nothing
     }
@@ -1273,20 +1339,196 @@
     }
 }
 
+#pragma mark - Monitor Methods
+
+- (void) showMonitorModal : (UIButton*) myButton {
+    
+    [UIView animateWithDuration:0.4
+          delay:0
+        options:UIViewAnimationOptionCurveEaseIn
+
+     animations:^(void){
+         vAddAMonitor.alpha = 1.0;
+     }
+
+     completion:^(BOOL Finished){
+     }
+     ];
+}
+
+- (void) closeMonitor : (UIButton*) myButton {
+    
+    [UIView animateWithDuration:0.4
+          delay:0
+        options:UIViewAnimationOptionCurveEaseIn
+
+        animations:^(void){
+         vAddAMonitor.alpha = 0.0;
+        }
+
+        completion:^(BOOL Finished){
+         
+            //clear out the text field
+            NSArray* arrMyObjs = [vAddAMonitor subviews];
+            
+            for(int i=0; i<arrMyObjs.count; i++) {
+                if ([[arrMyObjs objectAtIndex:i] isMemberOfClass:[UITextField class]]) {
+                    
+                    UITextField* txtMyTextField = (UITextField*)[arrMyObjs objectAtIndex:i];
+                    
+                    txtMyTextField.text = @"";
+                }
+            }
+         
+        }
+     ];
+}
+
+- (void) deleteMonitorCheck : (UIButton*) myButton {
+    
+    strSelectedMonitor = [arrMonitors objectAtIndex:myButton.tag];
+    
+    UIAlertView* alert=[[UIAlertView alloc]initWithTitle:@"Delete Monitor" message:[NSString stringWithFormat:@"Please confirm that you would like to delete the monitor: %@.",strSelectedMonitor] delegate:self cancelButtonTitle:nil otherButtonTitles:@"Yes", @"No",nil];
+    
+    alert.tag = 424;
+    [alert show];
+    
+}
+
+- (void) deleteMonitor {
+    
+    NSString* strMyORID;
+    
+    //remove it from the monitor array and table view
+    [arrMonitors removeObjectIdenticalTo:strSelectedMonitor];
+    [tblMonitors reloadData];
+    
+    //get the project number
+    [self checkForProjectNumber];
+    
+    //get the ors plist
+    NSDictionary* dictORs = [fileManager readPlist:[NSString stringWithFormat:@"%@/OperatingRooms.plist", projectNumber]];
+    
+    
+    NSMutableDictionary* newDictORs = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary* newDictThisOR = [[NSMutableDictionary alloc] init];
+    
+    
+    //get the current or id
+    NSArray* arrSubviews = self.subviews;
+    OAI_ScrollView* myScrollView = [arrSubviews objectAtIndex:1];
+    NSArray* arrScollPages = myScrollView.subviews;
+    UIView* vPage1 = [arrScollPages objectAtIndex:0];
+    NSArray* arrPage1Subviews = vPage1.subviews;
+    for(int i=0; i<arrPage1Subviews.count; i++) {
+        if ([[arrPage1Subviews objectAtIndex:i] isMemberOfClass:[OAI_TextField class]]) {
+            
+            OAI_TextField* txtThisField = (OAI_TextField*)[arrPage1Subviews objectAtIndex:i];
+            
+            if ([txtThisField.myLabel isEqualToString:@"Procedure Room ID"]) {
+                strMyORID = txtThisField.text;
+                break;
+            }
+        }
+    }
+    
+    
+    //get the id of the or we are working with
+    for(NSString* strThisKey in dictORs) {
+        
+        //find it's match in the or plist
+        if ([strMyORID isEqualToString:strThisKey]) {
+            
+            NSDictionary* dictThisORData = [dictORs objectForKey:strThisKey];
+            
+            //pull the monitors
+            for(NSString* strThisORKey in dictThisORData) {
+                
+                if ([strThisORKey isEqualToString:@"Monitors"]) {
+                    
+                    NSMutableArray* arrMyMonitors = [[dictThisORData objectForKey:strThisORKey] mutableCopy];
+                    
+                    for(int i=0; i<arrMyMonitors.count; i++) {
+                        
+                        if ([[arrMyMonitors objectAtIndex:i] isEqualToString:strSelectedMonitor]) {
+                            [arrMyMonitors removeObjectAtIndex:i];
+                            
+                        }
+                    }
+                    
+                    //add the data back to the dictionary
+                    [newDictThisOR setObject:arrMyMonitors forKey:@"Monitors"];
+                    
+                } else {
+                    
+                    //add the un-needed objects back into the new or dict
+                    [newDictThisOR setObject:[dictThisORData objectForKey:strThisORKey] forKey:strThisORKey];
+                }
+            }
+            
+            //add the new or dict to the master dict
+            [newDictORs setObject:newDictThisOR forKey:strThisKey];
+            
+        } else {
+            
+            //add the un-needed dictioanry's into the new master dict
+            [newDictORs setObject:[dictORs objectForKey:strThisKey] forKey:strThisKey];
+            
+        }
+        
+    }
+    
+    //write the data back to the plist
+    [fileManager writeToPlist:[NSString stringWithFormat:@"%@/OperatingRooms.plist", projectNumber] :newDictORs];
+    
+    
+}
+
+
+
 #pragma mark - Text Field Delegate Methods
 
 - (void)textFieldDidEndEditing:(OAI_TextField *)textField {
     
-    
-    //text field needs to be numeric
-    if(textField.tag == 601) {
+    if (textField.tag == 100) {
         
+        
+        //store the monitor type
+        strMonitorType = textField.text;
+        
+        //close the parent window
+        UIView* myParent = textField.superview;
+        
+        [UIView animateWithDuration:0.4
+            delay:0
+            options:UIViewAnimationOptionCurveEaseIn
+
+             animations:^(void){
+                 myParent.alpha = 0.0;
+             }
+
+             completion:^(BOOL Finished){
+             }
+         ];
+        
+        //save the monitor type to the monitors array
+        [arrMonitors addObject:textField.text];
+        
+        //reload the table
+        [tblMonitors reloadData];
+        
+        //clear out the text field
+        textField.text = @"";
+        
+    } else if (textField.tag == 0) {
+        
+        //store the procedure room name
+        strRoomID = textField.text;
+        
+        //clear out the stored monitors
+        [arrMonitors removeAllObjects];
         
     }
-    
-    if ([textField.myLabel isEqualToString:@"Operating Room ID"]) {
-        strRoomID = textField.text;
-    } 
     
 }
 
@@ -1306,10 +1548,48 @@
     return NO;
 }
 
-#pragma mark - Check if string contains numbers (including decimals)
+#pragma mark - Table View Management
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    // Return the number of sections.
+    return 1;
+}
 
 
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
+    return arrMonitors.count;
+}
 
+
+// Customize the appearance of table view cells.
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    static NSString *CellIdentifier = @"Cell";
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        
+        UIButton* btnDeleteMonitor = [UIButton buttonWithType:UIButtonTypeCustom];
+        [btnDeleteMonitor setImage:[UIImage imageNamed:@"btnDelete.jpg"] forState:UIControlStateNormal];
+        [btnDeleteMonitor setFrame:CGRectMake(cell.frame.size.width-60.0, 0.0, 30.0, 30.0)];
+        [btnDeleteMonitor addTarget:self action:@selector(deleteMonitorCheck:) forControlEvents:UIControlEventTouchUpInside];
+        btnDeleteMonitor.tag = indexPath.row;
+        [cell.contentView addSubview:btnDeleteMonitor];
+    }
+    
+    cell.textLabel.text = [arrMonitors objectAtIndex:indexPath.row];
+    cell.textLabel.textColor = [colorManager setColor:66.0 :66.0 :66.0];
+    cell.textLabel.font = [UIFont fontWithName:@"Helvetica" size:16.0];
+    cell.textLabel.backgroundColor = [UIColor clearColor];
+    
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    strSelectedMonitor = [arrMonitors objectAtIndex:indexPath.row];
+}
 
 
 

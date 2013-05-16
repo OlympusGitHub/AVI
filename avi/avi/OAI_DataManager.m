@@ -286,7 +286,7 @@
             
             [formElements addObject:
              [[NSMutableDictionary alloc] initWithObjectsAndKeys:
-              [[NSArray alloc] initWithObjects:@"Add Contact", @"Get Contacts", @"Add Procedure Room", nil], @"Buttons",
+              [[NSArray alloc] initWithObjects:@"Add Contact", @"Get Contacts", @"Add Procedure Room", @"Edit Procedure Room", nil], @"Buttons",
               @"Button Array", @"Field Type",
               nil]];
             
@@ -842,6 +842,8 @@
         return success;
     }
     
+    return 0;
+    
 }
 
 - (BOOL) saveContactData : (NSDictionary*) dictContactData : (NSString*) strProjectID : (BOOL) canOverwrite {
@@ -889,6 +891,8 @@
     [userData setObject:@"Contact" forKey:@"View To Close"];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"theMessenger" object:self userInfo: userData];
+    
+    return success;
     
 }
 

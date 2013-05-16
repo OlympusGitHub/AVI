@@ -14,6 +14,7 @@
 #import "OAI_OperatingRoomForm.h"
 #import "OAI_ContactList.h"
 #import "OAI_DataList.h"
+#import "OAI_ORList.h"
 
 #import "OAI_TextField.h"
 
@@ -28,6 +29,7 @@
     OAI_OperatingRoomForm* addProcedureRoom;
     OAI_ContactList* contactList;
     OAI_NewContactForm* addContact;
+    OAI_ORList* savedRooms; 
     
     
 }
@@ -57,5 +59,7 @@
 - (void) loadORData;
 
 - (void) loadLocationData;
+
+- (void) reloadTitleBar;
 
 @end

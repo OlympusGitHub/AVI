@@ -10,7 +10,7 @@
 
 @implementation OAI_ORList
 
-@synthesize arrORList, projectNumber, dictORData;
+@synthesize arrORList, dictORData;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -21,14 +21,14 @@
         fileManager = [[OAI_FileManager alloc] init];
         colorManager = [[OAI_ColorManager alloc] init];
         
-        self.layer.shadowColor = [UIColor blackColor].CGColor;
-        self.layer.shadowOffset = CGSizeMake(2.0, 2.0);
-        self.layer.shadowOpacity = .75;
+        //self.layer.shadowColor = [UIColor blackColor].CGColor;
+        //self.layer.shadowOffset = CGSizeMake(2.0, 2.0);
+        //self.layer.shadowOpacity = .75;
         
         arrORList = [[NSMutableArray alloc] init];
         
-        UILabel* lblORData = [[UILabel alloc] initWithFrame:CGRectMake(50.0, 30.0, self.frame.size.width-60.0, 60.0)];
-        lblORData.text = [NSString stringWithFormat:@"Operating Room Data For Project: %@", projectNumber];
+        lblORData = [[UILabel alloc] initWithFrame:CGRectMake(50.0, 30.0, self.frame.size.width-60.0, 60.0)];
+        lblORData.text = [NSString stringWithFormat:@"Operating Room Data For Project: %@", _strProjectNumber];
         lblORData.textColor = [colorManager setColor:8.0 :16.0 :123.0];
         lblORData.font = [UIFont fontWithName:@"Helvetica-Bold" size: 18.0];
         lblORData.backgroundColor = [UIColor clearColor];
@@ -60,13 +60,20 @@
         
         UIButton* btnClose = [UIButton buttonWithType:UIButtonTypeCustom];
         [btnClose setImage:[UIImage imageNamed:@"btnCloseX"] forState:UIControlStateNormal];
-        [btnClose setFrame:CGRectMake(self.frame.size.width-40.0, self.frame.size.height-40.0, 40.0, 40.0)];
+        [btnClose setFrame:CGRectMake(self.frame.size.width-40.0, self.frame.size.height-60.0, 40.0, 40.0)];
         [btnClose addTarget:self action:@selector(sendNotice:) forControlEvents:UIControlEventTouchUpInside];
         btnClose.tag = 303;
         [self addSubview:btnClose];
 
     }
     return self;
+}
+
+- (void) reloadTitleBar {
+    
+    lblORData.text = [NSString stringWithFormat:@"Operating Room Data For Project: %@", _strProjectNumber];
+    
+    
 }
 
 - (void) sendNotice : (UIButton*) myButton {
@@ -88,8 +95,11 @@
         
     } else if (myButton.tag == 303) {
         
-        //reset form tabs
-        [self resetFormTabs];
+        //get the parent view
+        UIView* myParentView = self.superview;
+        
+        //reset the stored or to load to nil
+        strORListName = nil;
         
         //close view
         [UIView
@@ -98,11 +108,11 @@
              options:UIViewAnimationOptionCurveEaseIn
              animations:^{
                  
-             self.alpha = 0.0;
+             myParentView.alpha = 0.0;
              }
              
              completion:^ (BOOL finished){
-                 [self setFrame:CGRectMake(-350, -600, self.frame.size.width, self.frame.size.height)];
+                 [myParentView setFrame:CGRectMake(-400, -700, self.frame.size.width, self.frame.size.height)];
              }
          ];
         
@@ -132,10 +142,13 @@
         
     } else {
         
-        //reset form tabs
-        [self resetFormTabs];
+        //get all the ors
+        dictORData = [fileManager readPlist:[NSString stringWithFormat:@"%@/OperatingRooms.plist", _strProjectNumber]];
         
         NSDictionary* dictThisOR = [dictORData objectForKey:strORListName];
+        
+        //reset the stored or to load to nil
+        strORListName = nil;
         
         //calling notification center
         NSMutableDictionary* userData = [[NSMutableDictionary alloc] init];
@@ -166,7 +179,7 @@
     }
     
     //write the new plist file
-    NSString* strORFile = [NSString stringWithFormat:@"%@/OperatingRooms.plist", projectNumber];
+    NSString* strORFile = [NSString stringWithFormat:@"%@/OperatingRooms.plist", _strProjectNumber];
     [fileManager writeToPlist:strORFile :dictOperatingRooms];
     
     
@@ -179,7 +192,7 @@
     
     
     //go through the location plist and remove any locations associated with the room
-    NSString* pathToLocations =[NSString stringWithFormat:@"%@/Locations.plist", projectNumber];
+    NSString* pathToLocations =[NSString stringWithFormat:@"%@/Locations.plist", _strProjectNumber];
     
     //get the plist contents
     NSDictionary* dictLocations = [fileManager readPlist:pathToLocations];
@@ -202,21 +215,9 @@
     arrORList = dictORData.allKeys;
     [tblORList reloadData];
     
-    //reset form tabs
-    [self resetFormTabs];
-    
-    
 }
 
-- (void) resetFormTabs {
- 
-    //reset the tabs on the parent view
-    UIView* myParent = self.superview;
-    NSArray* arrSubviews = myParent.subviews;
-    
-    UISegmentedControl* scFormOptions = (UISegmentedControl*)[arrSubviews objectAtIndex:1];
-    scFormOptions.selectedSegmentIndex = -1;
-}
+
 
 #pragma mark - Alert Methods
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {

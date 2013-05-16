@@ -13,11 +13,7 @@
 - (NSMutableArray*) setTabOrder {
     
     NSMutableArray* arrMasterTabOrder = [[NSMutableArray alloc] init];
-    NSMutableArray* arrPage1TabOrder = [[NSMutableArray alloc] init];
-    NSMutableArray* arrHospitalTabOrder = [[NSMutableArray alloc] init];
-    NSMutableArray* arrBoomCompanyTabOrder = [[NSMutableArray alloc] init];
     
-    int tabIndex = 0;
     for(int i=0; i<_arrAllElements.count; i++) {
         
         if (i<_arrAllElements.count-1) {

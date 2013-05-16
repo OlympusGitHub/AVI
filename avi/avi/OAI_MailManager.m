@@ -37,11 +37,11 @@
     NSDictionary* dictLocations = [_dictProjectData objectForKey:@"Locations"];
     NSDictionary* dictAccountData = [_dictProjectData objectForKey:@"Account Data"];
     
-    NSLog(@"%@", _dictProjectData);
+    //NSLog(@"%@", _dictProjectData);
     
     NSMutableString* strMailBody = [[NSMutableString alloc] initWithString:[NSString stringWithFormat:@"<div><p style=\"font-weight:900; color:#666; font-size:24px; font-family:Helvetica, Arial, sans-serif\">Site Integration Report for %@</p></div>", _strProjectNumber]];
     
-    [strMailBody appendString:@"<div><table width=644>"];
+    [strMailBody appendString:@"<div><table width=700>"];
     [strMailBody appendString:@"<tr><td colspan=\"2\" style=\"background:#666; color:#eee; padding:3px; font-weight: 900; font-size:20px;\">Project Data</td></tr>"];
     
     [strMailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">Olympus Representative:</td><td <td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">%@</td></tr>", strEvenRowColor, strEvenRowColor, [dictAccountData objectForKey:@"User Name"]]];
@@ -100,7 +100,7 @@
     //ENDOALPHA Soltuion
     [strMailBody appendString:@"<tr><td colspan=\"2\" style=\"background:#666; color:#eee; padding:3px; font-weight: 900; font-size:20px;\">ENDOALPHA Solution</td></tr>"];
     
-    [strMailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">ENDOALPHA Control:</td><td></td></tr>", strEvenRowColor ]];
+    [strMailBody appendString:[NSString stringWithFormat:@"<tr><td colspan=2 style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">ENDOALPHA Control:</td></tr>", strEvenRowColor ]];
     
     [strMailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">AVP:</td><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">%@</td></tr>", strOddRowColor, strOddRowColor, [dictProject objectForKey:@"AVP"]]];
     
@@ -180,7 +180,7 @@
     
     [strMailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">Scrubs required:</td><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">%@</td></tr>", strOddRowColor, strOddRowColor, [dictProject objectForKey:@"Scrubs required:"]]];
     
-    [strMailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">Safety Comments:</td><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">%@</td></tr>", strOddRowColor, strOddRowColor, [dictProject objectForKey:@"Safety_Comments"]]];
+    [strMailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">Safety Comments:</td><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">%@</td></tr>", strEvenRowColor, strEvenRowColor, [dictProject objectForKey:@"Safety_Comments"]]];
     
     //documents
     
@@ -190,13 +190,11 @@
     
     [strMailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">Electrical Installation Scheme:</td><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">%@</td></tr>", strOddRowColor, strOddRowColor, [dictProject objectForKey:@"Electrical Installation Scheme:"]]];
     
-    /*[strMailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">Pictures (required):</td><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">%@</td></tr>", strEvenRowColor, strEvenRowColor, [dictProject objectForKey:@"Pictures (required):"]]];*/
-    
-    [strMailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">Facility Drawing:</td><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">%@</td></tr>", strOddRowColor, strOddRowColor, [dictProject objectForKey:@"Facility Drawing:"]]];
+    [strMailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">Facility Drawing:</td><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">%@</td></tr>", strEvenRowColor, strEvenRowColor, [dictProject objectForKey:@"Facility Drawing:"]]];
     
     [strMailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">Other:</td><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">%@</td></tr>", strOddRowColor, strOddRowColor, [dictProject objectForKey:@"Other:"]]];
     
-    [strMailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">Documents Comments:</td><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">%@</td></tr>", strOddRowColor, strOddRowColor, [dictProject objectForKey:@"Documents_Comments"]]];
+    [strMailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">Documents Comments:</td><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">%@</td></tr>", strEvenRowColor, strEvenRowColor, [dictProject objectForKey:@"Documents_Comments"]]];
     
     [strMailBody appendString:@"<tr><td colspan=\"2\" style=\"background:#666; color:#eee; padding:3px; font-weight: 900; font-size:20px;\">Procedure Rooms</td></tr>"];
     
@@ -223,6 +221,7 @@
         
         
         int ceilingID = [[dictThisRoom objectForKey:@"Ceiling:"] intValue];
+        
         NSString* strCeiling;
         if (ceilingID == 0) {
             strCeiling = @"Hatch";
@@ -230,6 +229,8 @@
             strCeiling = @"Drop Ceiling";
         } else if (ceilingID == 2) {
             strCeiling = @"Sealed";
+        } else {
+            strCeiling = @"No Entry";
         }
             
         [strMailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">Ceiling:</td><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">%@</td></tr>", strEvenRowColor, strEvenRowColor, strCeiling]];
@@ -238,15 +239,23 @@
         
         [strMailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">Procedure Room Floor:</td><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">%@</td></tr>", strEvenRowColor, strEvenRowColor, [dictThisRoom objectForKey:@"Procedure Room Floor"]]];
         
-        [strMailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">Procedure Room Department:</td><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">%@</td></tr>", strEvenRowColor, strEvenRowColor, [dictThisRoom objectForKey:@"Procedure Room Dept."]]];
+        [strMailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">Procedure Room Department:</td><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">%@</td></tr>", strOddRowColor, strOddRowColor, [dictThisRoom objectForKey:@"Procedure Room Dept."]]];
         
         [strMailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">Procedure Room  Number:</td><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">%@</td></tr>", strEvenRowColor, strEvenRowColor, [dictThisRoom objectForKey:@"Procedure Room No."]]];
         
-        [strMailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">Number of Monitors:</td><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">%@</td></tr>", strOddRowColor, strOddRowColor, [dictThisRoom objectForKey:@"Number of Monitors"]]];
+        NSArray* arrMonitors = [dictThisRoom objectForKey:@"Monitors"];
+        NSMutableString* strMonitors = [[NSMutableString alloc] init];
+        if (arrMonitors) { 
+            for(int i=0; i<arrMonitors.count; i++) {
+                [strMonitors appendString:[NSString stringWithFormat:@"%@, ", [arrMonitors objectAtIndex:i]]];
+            }
+        } else {
+            [strMonitors appendString:@"No Entries"];
+        }
         
-        [strMailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">Types of Monitors:</td><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">%@</td></tr>", strEvenRowColor, strEvenRowColor, [dictThisRoom objectForKey:@"Types of Monitors"]]];
-        
-        [strMailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">Wall Location:</td><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">%@</td></tr>", strOddRowColor, strOddRowColor, [dictThisRoom objectForKey:@"Wall Location"]]];
+        [strMailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">Monitors:</td><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">%@</td></tr>", strOddRowColor, strOddRowColor, strMonitors]];
+                
+        [strMailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">Wall Location:</td><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">%@</td></tr>", strEvenRowColor, strEvenRowColor, [dictThisRoom objectForKey:@"Wall Location"]]];
         
         
         //get any matching locations for this OR
@@ -293,16 +302,20 @@
             }
         }
         
-        //misc. info
-        [strMailBody appendString:@"</table></div>"];
-        [strMailBody appendString:@"<p><div><table width=644>"];
-        
-        [strMailBody appendString:[NSString stringWithFormat:@"<tr><td colspan=\"2\" style=\"background:#666; color:#eee; padding:3px; font-weight: 900; font-size:20px;\">Miscellaneous Information:</td><td></td></tr>"]];
-        
-        [strMailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">Miscellaneous Information:</td><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">%@</td></tr>", strOddRowColor, strOddRowColor, [dictProject objectForKey:@"Miscellaneous Info:"]]];
-        
+        [strMailBody appendString:@"<tr><td colpsan='2' height='15'>&nbsp;</td></tr>"];
         
     }
+        
+    //misc. info
+    [strMailBody appendString:@"</table></div>"];
+    [strMailBody appendString:@"<p><div><table width=644>"];
+    
+    [strMailBody appendString:[NSString stringWithFormat:@"<tr><td colspan=\"2\" style=\"background:#666; color:#eee; padding:3px; font-weight: 900; font-size:20px;\">Miscellaneous Information:</td><td></td></tr>"]];
+    
+    [strMailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">Miscellaneous Information:</td><td style=\"background:%@; color:#666; font-size:14px font-weight:200; padding:2px; font-family: Helvetica, Arial, sans-serif;\">%@</td></tr>", strOddRowColor, strOddRowColor, [dictProject objectForKey:@"Miscellaneous Info:"]]];
+    
+        
+    
     
     [strMailBody appendString:@"</table></div>"];
     

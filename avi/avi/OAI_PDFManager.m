@@ -81,7 +81,7 @@
         }*/
         
         //get hospital name
-        NSString* strHospitalName = [dictProject objectForKey:@"Hospital  Name:"];
+        //NSString* strHospitalName = [dictProject objectForKey:@"Hospital  Name:"];
         
         //set up our font styles
         UIFont* headerFont = [UIFont fontWithName:@"Helvetica-Bold" size:12.0];
@@ -110,7 +110,7 @@
         CGPoint bgRectEndPoint;
         
         //set up data fields
-        NSArray* arrSections = [[NSArray alloc] initWithObjects:@"Site Information", @"ENDOALPHA Solution", @"Hospital Information", @"Pre-Install Checklist", nil];
+        //NSArray* arrSections = [[NSArray alloc] initWithObjects:@"Site Information", @"ENDOALPHA Solution", @"Hospital Information", @"Pre-Install Checklist", nil];
         NSArray* arrInfoFields = [[NSArray alloc] initWithObjects:@"Project Number:", @"Inspection Date:", @"Prepared By:", @"Revised Date:", @"Revised By:",nil];
         NSArray* arrENDOALPHAFields = [[NSArray alloc] initWithObjects:@"AVP", @"UCES", @"UCES+", @"SD Recording", @"HD Recording", nil];
         NSArray* arrHospitalFields = [[NSArray alloc] initWithObjects:@"Hospital  Name:", @"Address:", @"City:", @"State", @"Zip:", nil];

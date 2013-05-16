@@ -19,7 +19,7 @@
         
         colorManager = [[OAI_ColorManager alloc] init];
         contactData = [[NSMutableDictionary alloc] init];
-        
+                
         UILabel* lblInstructions = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, self.frame.size.width-20.0, 60.0)];
         lblInstructions.text = @"Fill out the form below and click the submit button to add a contact to your contact list for this project.";
         lblInstructions.textColor = [colorManager setColor:66.0 :66.0 :66.0];
