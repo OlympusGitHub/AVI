@@ -86,6 +86,7 @@
 		DBD8CF47171C3E7200B4006D /* OAI_TitleScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = DB0C1A921709F790001AA190 /* OAI_TitleScreen.m */; };
 		DBD8CF48171C3E7200B4006D /* OAI_DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DB0C1A941709F790001AA190 /* OAI_DataManager.m */; };
 		DBFC3AE1171C749300DB908C /* OAI_Switch.m in Sources */ = {isa = PBXBuildFile; fileRef = DBFC3AE0171C749300DB908C /* OAI_Switch.m */; };
+		DBFDED651745373700AB091A /* btnEdit.png in Resources */ = {isa = PBXBuildFile; fileRef = DBFDED641745373700AB091A /* btnEdit.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -221,6 +222,7 @@
 		DBD8CF1E171C3DA700B4006D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController.xib; sourceTree = "<group>"; };
 		DBFC3ADF171C749300DB908C /* OAI_Switch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAI_Switch.h; sourceTree = "<group>"; };
 		DBFC3AE0171C749300DB908C /* OAI_Switch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAI_Switch.m; sourceTree = "<group>"; };
+		DBFDED641745373700AB091A /* btnEdit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = btnEdit.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -310,6 +312,7 @@
 		DB0C1A3F1709F755001AA190 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				DBFDED641745373700AB091A /* btnEdit.png */,
 				DB5AF909173C06C20017BA7C /* btnDelete.jpg */,
 				DBA82C4B17394F0E00E3E8AB /* btnPlaceHolder.png */,
 				DB0C1A431709F776001AA190 /* imgENDOALPHA.png */,
@@ -569,6 +572,7 @@
 				DB3F8DCB17203CB000CD43E2 /* Default-Portrait@2x~ipad.png in Resources */,
 				DBA82C4C17394F0E00E3E8AB /* btnPlaceHolder.png in Resources */,
 				DB5AF90A173C06C20017BA7C /* btnDelete.jpg in Resources */,
+				DBFDED651745373700AB091A /* btnEdit.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -721,7 +725,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "avi/avi-Prefix.pch";
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				INFOPLIST_FILE = "avi/avi-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -735,7 +739,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "avi/avi-Prefix.pch";
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				INFOPLIST_FILE = "avi/avi-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";

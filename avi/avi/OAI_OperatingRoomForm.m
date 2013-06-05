@@ -31,20 +31,7 @@
         
         isExistingRoom = NO;
         
-        NSString* strInstructions = @"Select to either enter a new room or edit an existing one from the options below.";
-        CGSize instrSize = [strInstructions sizeWithFont:[UIFont fontWithName:@"Helvetica" size:18.0] constrainedToSize:CGSizeMake(self.frame.size.width-20.0, 999.0) lineBreakMode:NSLineBreakByWordWrapping];
-        
-        UILabel* lblInstructions = [[UILabel alloc] initWithFrame:CGRectMake(10.0, 0.0, self.frame.size.width-20.0, instrSize.height)];
-        lblInstructions.text = strInstructions;
-        lblInstructions.numberOfLines = 0;
-        lblInstructions.lineBreakMode = NSLineBreakByWordWrapping;
-        lblInstructions.textAlignment = NSTextAlignmentCenter;
-        lblInstructions.textColor = [colorManager setColor:66.0 :66.0 :66.0];
-        lblInstructions.font = [UIFont fontWithName:@"Helvetica" size:18.0];
-        lblInstructions.backgroundColor = [UIColor clearColor];
-        [self addSubview:lblInstructions];
-        
-        svFormViews = [[OAI_ScrollView alloc] initWithFrame:CGRectMake(10.0, lblInstructions.frame.origin.y + lblInstructions.frame.size.height + 15.0, self.frame.size.width-20.0, self.frame.size.height)];
+        svFormViews = [[OAI_ScrollView alloc] initWithFrame:CGRectMake(10.0, 15.0, self.frame.size.width-20.0, self.frame.size.height)];
         [svFormViews setContentSize: CGSizeMake(self.frame.size.width*2, svFormViews.frame.size.height)];
         svFormViews.delegate = self;
         svFormViews.canCancelContentTouches = NO;
@@ -53,7 +40,7 @@
         float screenX = 0.0;
         float screenY = 0.0;
         float screenW = svFormViews.frame.size.width;
-        float screenH = self.frame.size.height-(scFormOptions.frame.size.height + lblInstructions.frame.size.height + 0.0);
+        float screenH = self.frame.size.height;
         
         for(int i=0; i<2; i++) {
             
@@ -1109,7 +1096,6 @@
      
 
 }
-
 
 #pragma mark - Show Alert
 

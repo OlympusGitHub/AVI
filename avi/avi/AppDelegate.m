@@ -20,6 +20,27 @@
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
     return YES;
+    
+
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+   /* NSLog(@"Open URL:\t%@\n"
+          "From source:\t%@\n"
+          "With annotation:%@",
+          url, sourceApplication, annotation);*/
+    
+    NSMutableDictionary* userData = [[NSMutableDictionary alloc] init];
+    
+    [userData setObject:@"Read Plist" forKey:@"Action"];
+    [userData setObject:url forKey:@"File Path"];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"theMessenger" object:self userInfo: userData];
+    
+    //NSString *filepath = [url path];
+    //...
+    return YES;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application

@@ -73,7 +73,6 @@
     
     lblORData.text = [NSString stringWithFormat:@"Operating Room Data For Project: %@", _strProjectNumber];
     
-    
 }
 
 - (void) sendNotice : (UIButton*) myButton {

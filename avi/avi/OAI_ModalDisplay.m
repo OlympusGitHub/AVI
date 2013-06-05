@@ -72,7 +72,7 @@
         contactList = [[OAI_ContactList alloc] initWithFrame:CGRectMake(20.0, vModalBar.frame.origin.y + vModalBar.frame.size.height+10.0, self.frame.size.width-40.0, self.frame.size.height - vModalBar.frame.size.height)];
         [self addSubview:contactList];
         
-    } else if ([strModalTitle isEqualToString:@"Add Procedure Room"]) {
+    } else if ([strModalTitle isEqualToString:@"Add Procedure Room"] || [strModalTitle isEqualToString:@"Edit Procedure Room"]) {
         addProcedureRoom = [[OAI_OperatingRoomForm alloc] initWithFrame:CGRectMake(20.0, vModalBar.frame.origin.y + vModalBar.frame.size.height+10.0, self.frame.size.width-40.0, self.frame.size.height - vModalBar.frame.size.height)];
         
         addProcedureRoom.vMyParent = _vMyParent;
@@ -91,6 +91,12 @@
 }
 
 #pragma mark - Title Bar
+
+- (void) reloadMyTitleBar {
+    
+    lblModalLabel.text = strModalTitle;
+}
+
 
 - (void) reloadTitleBar {
     

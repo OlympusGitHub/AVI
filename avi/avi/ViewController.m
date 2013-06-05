@@ -606,7 +606,7 @@
                     imgBtn = [UIImage imageNamed:@"btnNewOR.png"];
                     strBtnAction = @"newProcedureRoom";
                 } else if ([strBtnTitle isEqualToString:@"Edit Procedure Room"]) {
-                    imgBtn = [UIImage imageNamed:@"btnPlaceHolder.png"];
+                    imgBtn = [UIImage imageNamed:@"btnEdit.png"];
                     strBtnAction = @"editProcedureRoom";
                 }
                     
@@ -765,7 +765,7 @@
              NSDictionary* dictThisProjectData = [[notification userInfo] objectForKey:@"Project Data"];
              
              //display the data
-             [self displayData:dictThisProjectData];
+             [self displayData:dictThisProjectData:YES];
              
              //clear out the data list table
              [vSavedProjects clearTableData];
@@ -810,24 +810,39 @@
             [self animationManager:vAddProcedureRoom :nil];
             
             vAddProcedureRoom.dictSavedORData = [[notification userInfo] objectForKey:@"OR Data"];
+            vAddProcedureRoom.strModalTitle = @"Edit Procedure Room";
+            [vAddProcedureRoom reloadMyTitleBar];
             [vAddProcedureRoom loadORData];
             
         } else if ([strAction isEqualToString:@"Load Location"]) {
             
             vAddProcedureRoom.dictSavedLocation = [[notification userInfo] objectForKey:@"Location Data"];
             [vAddProcedureRoom loadLocationData];
+            
+        } else if ([strAction isEqualToString:@"Read Plist"]) {
+            
+            dictAttachedData = [[NSDictionary alloc] init];
+            
+            NSURL* url = [[notification userInfo] objectForKey:@"File Path"];
+            NSArray* arrURLParts = [url pathComponents];
+            NSString* strFilePath = [NSString stringWithFormat:@"%@/%@", [arrURLParts objectAtIndex:arrURLParts.count-2], [arrURLParts objectAtIndex:arrURLParts.count-1]];
+            
+            dictAttachedData = [fileManager readPlist:strFilePath];
+            
+            [self examineAttachedData];
+            
         }
     }
 }
 
+
 #pragma mark - Data Management
 
-- (void) displayData : (NSDictionary* ) dictThisProject {
+- (void) displayData : (NSDictionary* ) dictThisProject : (BOOL) needsAnimation {
     
     NSString* strElementName;
     
     for(NSString* strThisKey in dictThisProject) {
-        
         
         for(int i=0; i<arrAllElements.count; i++) {
             
@@ -936,7 +951,9 @@
     }
     
     //close the modal window
-    [self animationManager:vSavedProjects :nil];
+    if (needsAnimation) { 
+        [self animationManager:vSavedProjects :nil];
+    }
     
     //if the titlescreen is displayed, close it
     if (titleScreenManager.alpha == 1.0) {
@@ -999,14 +1016,21 @@
     
     if (![strResults isEqualToString:@"Fail"]) {
         
+        //build project list
         for(NSString* strThisKey in dictProjects) {
             
-            [arrSavedProjects addObject:[dictProjects objectForKey:strThisKey]];
+            NSString* strProjectName = [dictProjects objectForKey:strThisKey];
+            
+            if ([strProjectName rangeOfString:@".plist"].location == NSNotFound && [strProjectName rangeOfString:@"Inbox"].location == NSNotFound) {
+                [arrSavedProjects addObject:strProjectName];
+            }
         }
         
+        //pass project list to modal window and reload the table
         vSavedProjects.arrModalTableData = arrSavedProjects;
         [vSavedProjects reloadTableData];
         
+        //display the modal window
         OAI_ModalDisplay* thisModal = vSavedProjects;
         
         [self animationManager:thisModal:nil];
@@ -1072,6 +1096,71 @@
         [alert show];
 
     }
+    
+}
+
+- (void) examineAttachedData  {
+    
+    if(dictAttachedData) {
+        
+        //get the project data
+        NSDictionary* dictProjectData = [dictAttachedData objectForKey:@"Project Data"];
+        NSString* strProjectNumber = [dictProjectData objectForKey:@"Project Number:"];
+        
+        //check to see if project exists
+        NSArray* arrDocumentDiretories = [fileManager getDocDirectoryFolders];
+        if ([arrDocumentDiretories containsObject:strProjectNumber]) {
+            UIAlertView *alert =
+            [[UIAlertView alloc] initWithTitle: @"Project Already Exists!"
+                       message: [NSString stringWithFormat:@"The project: %@ already exists in your documents directory. Do you want to proceed? Doing so will over write the existing data.", strProjectNumber]
+                      delegate: self
+             cancelButtonTitle: nil
+             otherButtonTitles: @"Yes", @"No", nil];
+            alert.tag = 311;
+            [alert show];
+
+        } else {
+            [self parseAttachedData];
+        }
+        
+        
+    } else {
+        
+        UIAlertView *alert =
+        [[UIAlertView alloc] initWithTitle: @"Data Display Error!"
+                                   message: @"There was a problem displaying the attached data."
+                                  delegate: self
+                         cancelButtonTitle: @"OK"
+                         otherButtonTitles: nil];
+        [alert show];
+        
+    }
+
+}
+
+- (void) parseAttachedData {
+    
+    //get the data
+    NSDictionary* dictProjectData = [dictAttachedData objectForKey:@"Project Data"];
+    NSDictionary* dictContactData = [dictAttachedData objectForKey:@"Contacts"];
+    NSDictionary* dictProcedureRoomData = [dictAttachedData objectForKey:@"Procedure Rooms"];
+    
+    //display the project data
+    [self displayData:dictProjectData:NO];
+    [svSubSections setContentOffset:CGPointMake(0.0f, 0.0f) animated:YES];
+    
+    //overwrite the existing plist files
+    
+    //get the project number
+    NSString* strProjectNumber = [dictProjectData objectForKey:@"Project Number:"];
+    NSString* strProjectPath = [NSString stringWithFormat:@"%@/Project_%@.plist", strProjectNumber, strProjectNumber];
+    NSString* strContactsPath = [NSString stringWithFormat:@"%@/Contacts.plist", strProjectNumber];
+    NSString* strProcedureRoomsPath = [NSString stringWithFormat:@"%@/OperatingRooms.plist", strProjectNumber];
+    
+    [fileManager writeToPlist:strProjectPath :dictProjectData];
+    [fileManager writeToPlist:strContactsPath :dictContactData];
+    [fileManager writeToPlist:strProcedureRoomsPath :dictProcedureRoomData];
+    
     
 }
 
@@ -1172,12 +1261,12 @@
         
         NSString* strProcedurePath = [NSString stringWithFormat:@"%@/OperatingRooms.plist", projectNumber];
         
+        
         //get the main project data
         NSDictionary* dictProjectData = [fileManager readPlist:strProjectPath];
         NSDictionary* dictContactData = [fileManager readPlist:strContactPath];
         NSDictionary* dictProcedureData = [fileManager readPlist:strProcedurePath];
         NSDictionary* dictAccountData = [fileManager readPlist:@"UserAccount.plist"];
-        NSLog(@"%@", dictProcedureData);
         
         if (dictAccountData.count == 0) {
             isValid = NO;
@@ -1214,8 +1303,6 @@
                         //on a match, get the saved data
                         NSString* strFieldValue = [dictProjectData objectForKey:strThisKey];
                         
-                        
-                        
                         if (!strFieldValue || strFieldValue == nil || [strFieldValue isEqualToString:@"-1"] ||[strFieldValue isEqualToString:@"No Entry"] || [strFieldValue isEqualToString:@""]) {
                             
                             [strErrMsg appendString:[NSString stringWithFormat:@"%@\n\n", strThisKey]];
@@ -1228,8 +1315,6 @@
             }
             
             //check the AVP/UCES/UCES+ checkboxes
-            
-            
             
             if (!isValid) {
                 
@@ -1264,7 +1349,7 @@
                     [dictMasterData setObject:dictProcedureRooms forKey:@"Procedure Rooms"];
                 }
                 
-                if (dictLocations) { 
+                if (dictLocations) {
                     [dictMasterData setObject:dictLocations forKey:@"Locations"];
                 }
                 
@@ -1304,7 +1389,7 @@
                     NSString* strPDFTitle = [NSString stringWithFormat:@"SiteInspectionReport_%@.pdf", projectNumber];
                     
                     pdfManager.projectNumber = projectNumber;
-                    pdfManager.dictResults = dictMasterData;
+                    pdfManager.dictPDFData = dictMasterData;
                     
                     [pdfManager makePDF:strPDFTitle :dictMasterData];
                                         
@@ -1318,7 +1403,20 @@
                                         
                     //attach the pdf file
                     [mailViewController addAttachmentData:pdfData mimeType:@"application/pdf" fileName:strPDFTitle];
-                   
+                    
+                    
+                    //attach the plist
+                    
+                    //create master plist
+                    NSString* strMasterPlistFile = [NSString stringWithFormat:@"%@_Master.plist", projectNumber];
+                    NSString* masterPlistFilePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@/%@", projectNumber, strMasterPlistFile]];
+                    
+                    //create the plist file
+                    //NSFileManager *fileManager = [NSFileManager defaultManager];
+                    [dictMasterData writeToFile: masterPlistFilePath atomically:YES];
+                                    
+                    NSData* masterData = [NSData dataWithContentsOfFile:masterPlistFilePath];
+                    [mailViewController addAttachmentData:masterData mimeType:@"plist" fileName:strMasterPlistFile];
                     
                     [self presentViewController:mailViewController animated:YES completion:NULL];
                     
@@ -1437,6 +1535,8 @@
         } else if (myTag == 103) {
             
             thisModal = vAddProcedureRoom;
+            thisModal.strModalTitle = @"Add Procedure Room";
+            [thisModal reloadMyTitleBar];
             
         } else if (myTag == 104) {
             
@@ -1448,6 +1548,8 @@
                 hasError = YES;
                 strErrMsg = @"There are no saved rooms to edit.";
             } else {
+                
+                vAddProcedureRoom.strModalTitle = @"Edit Procedure Room";
                 
                 [self displaySavedRooms:dictSavedRooms];
             }
@@ -1778,6 +1880,19 @@
     
     return NO;
         
+}
+
+#pragma mark - Alert Methods
+
+-(void)alertView:(UIAlertView *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+
+    if (actionSheet.tag == 311) {
+        
+        if (buttonIndex == 0) {
+            
+            [self parseAttachedData];
+        }
+    }
 }
 
 

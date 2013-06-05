@@ -13,7 +13,7 @@
     CGSize pageSize;
 }
 
-@synthesize strTableTitle, dictResults, projectNumber;
+@synthesize strTableTitle, projectNumber;
 
 +(OAI_PDFManager *)sharedPDFManager {
     
@@ -53,83 +53,55 @@
     NSString *documentsDirectory = [paths objectAtIndex:0];
     NSString *pdfFileName = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@/%@", projectNumber, fileName]];
     
-    [self generatePdfWithFilePath:pdfFileName:results];
+    [self generatePdfWithFilePath:pdfFileName];
     
 }
 
-- (void) generatePdfWithFilePath: (NSString *)thefilePath : (NSDictionary*) results {
-    
-    UIGraphicsBeginPDFContextToFile(thefilePath, CGRectZero, nil);
-    
+- (void) generatePdfWithFilePath : (NSString* ) strFileName {
+
+    UIGraphicsBeginPDFContextToFile(strFileName, CGRectZero, nil);
+
     BOOL done = NO;
     
+    NSDictionary* dictProject = [_dictPDFData objectForKey:@"Project Data"];
+    NSDictionary* dictProcedureRooms = [_dictPDFData objectForKey:@"Procedure Rooms"];
+    NSDictionary* dictContacts = [_dictPDFData objectForKey:@"Contacts"];
+    NSDictionary* dictLocations = [_dictPDFData objectForKey:@"Locations"];
+
+    //set up our font styles
+    headerFont = [UIFont fontWithName:@"Helvetica-Bold" size:12.0];
+    contentFont = [UIFont fontWithName:@"Helvetica" size:11.0];
+
+    //set up constraints and frames
+    pageConstraint = CGSizeMake(pageSize.width - 2*kBorderInset-2*kMarginInset, pageSize.height - 2*kBorderInset - 2*kMarginInset);
+
+    lineWidth = 0.0;
+
+    NSArray* arrSections = [[NSArray alloc] initWithObjects:@"Site Information", @"ENDOALPHA Solution", @"Hospital Information", @"Pre-Install Checks", @"Misc. Info.", @"Procedure Rooms", @"Contacts", nil];
+
+    NSArray* arrInfoFields = [[NSArray alloc] initWithObjects:@"Project Number:", @"Inspection Date:", @"Prepared By:", @"Revised Date:", @"Revised By:",nil];
+    NSArray* arrENDOALPHAFields = [[NSArray alloc] initWithObjects:@"AVP", @"UCES", @"UCES+", @"SD Recording", @"HD Recording", nil];
+    NSArray* arrHospitalFields = [[NSArray alloc] initWithObjects:@"Hospital  Name:", @"Address:", @"City:", @"State", @"Zip:", nil];
+
+    NSArray* arrENDOALPHAControl = [[NSArray alloc] initWithObjects:@"Cabling length does not exceed approx 130ft. between AV equipment to AVP Rack:", @"Hospital representative agreed to cable:", @"Placement of AVP agreed by hospital representative in accordance to installation manual:", @"Placement of Touch Panels agreed by hospital:", @"Audio and Video interfaces requirements and specifications have been discussed:", @"Data interfaces requirements and specifications have been discussed:", @"Other pre-installation requirements checked:", @"ENDOALPHA_Control_Comments", nil];
+    NSArray* arrENDOALPHAVideo = [[NSArray alloc] initWithObjects:@"Pre-installation requirements checked:", @"Cabling route agreed:", @"Placement of Recording Device agreed by hospital:", @"Video interfaces requirements and specifications have been discussed:", @"Data interfaces requirements and specifications have been discussed:", @"ENDOALPHA_Video_Comments", nil];
+    NSArray* arrBoomCompany = [[NSArray alloc] initWithObjects: @"Site was inspected by boom company:", @"Type of Boom (Model Number):", @"Tentative Install Dates:", @"Boom_Company_Comments", nil];
+    NSArray* arrSafety = [[NSArray alloc] initWithObjects:@"Construction:", @"Is Olympus Required For Tear Out:", @"Safety glasses required:", @"Safety shoes required:", @"Hard hat required:", @"Hearing protection required:", @"Scrubs required:", @"Safety_Comments", nil];
+    NSArray* arrDocuments = [[NSArray alloc] initWithObjects:@"2D Floor Plan:", @"Electrical Installation Scheme:", @"Facility Drawing:", @"Other:", nil];
+    NSArray* arrPreInstallSections = [[NSArray alloc] initWithObjects:@"ENDOALPHA", @"Video", @"Boom Company", @"Safety", @"Documents", nil];
+
+    NSArray* arrORField = [[NSArray alloc] initWithObjects:@"Length (ft)", @"Width (ft)",  @"True Ceiling Height (ft)", @"False Ceiling Height (ft)", @"Ceiling:", @"Procedure Room Bldg.", @"Procedure Room Floor", @"Procedure Room Dept.", @"Procedure Room No.", @"Monitors", @"Wall Location", nil];
+
+    NSArray* arrLocatonFields = [[NSArray alloc] initWithObjects:@"Location ID", @"Other Location Building", @"Floor", @"Department", @"Name of Room", @"Distance From OR (ft)", @"Signal Connection", @"Network", @"AV Equipment", nil];
+
+    NSArray* arrContactFields = [[NSArray alloc] initWithObjects:@"Contact Name", @"Contact Phone", @"Contact Email", @"Contact Title", @"Main Contact", nil];
+
+    NSArray* arrPreInstallFields = [[NSArray alloc] initWithObjects: arrENDOALPHAControl, arrENDOALPHAVideo, arrBoomCompany, arrSafety, arrDocuments, nil];
+
+    NSArray* arrAllSections = [[NSArray alloc] initWithObjects:arrInfoFields, arrENDOALPHAFields, arrHospitalFields, arrPreInstallFields, nil];
+
     do {
         
-        //set up dictionaries
-        //NSLog(@"%@", results);
-        NSDictionary* dictProject = [results objectForKey:@"Project Data"];
-        NSDictionary* dictOR = [results objectForKey:@"Procedure Rooms"];
-        NSDictionary* dictLocations = [results objectForKey:@"Locations"];
-        NSDictionary* dictContacts = [results objectForKey:@"Contacts"];
-        
-        /*//had to do this here because there's some glitch with the dict and the ceiling entry
-        NSString* strCeiling;
-        for(NSString* strThisKey in dictOR) {
-            if ([strThisKey isEqualToString:@"Ceiling:"]) {
-                strCeiling = [dictOR objectForKey:strThisKey];
-            }
-        }*/
-        
-        //get hospital name
-        //NSString* strHospitalName = [dictProject objectForKey:@"Hospital  Name:"];
-        
-        //set up our font styles
-        UIFont* headerFont = [UIFont fontWithName:@"Helvetica-Bold" size:12.0];
-        UIFont* contentFont = [UIFont fontWithName:@"Helvetica" size:9.0];
-        
-        
-        //set up a some constraints
-        CGSize pageConstraint = CGSizeMake(pageSize.width - 2*kBorderInset-2*kMarginInset, pageSize.height - 2*kBorderInset - 2*kMarginInset);
-        CGSize col1Constraint = CGSizeMake(300.0, 999.0);
-        CGSize col2Constraint = CGSizeMake(100.0, 999.0);
-        CGSize contactConstraint = CGSizeMake(200.0, 999.0);
-        
-        NSString* strSection;
-        CGRect sectionFrame;
-        CGSize sectionConstraint;
-        float textY;
-        float textX;
-        
-        //set up a color holder
-        UIColor* textColor;
-        UIColor* bgRectColor;
-        
-        //set up a line width holder
-        float lineWidth;
-        CGPoint bgRectStartPoint;
-        CGPoint bgRectEndPoint;
-        
-        //set up data fields
-        //NSArray* arrSections = [[NSArray alloc] initWithObjects:@"Site Information", @"ENDOALPHA Solution", @"Hospital Information", @"Pre-Install Checklist", nil];
-        NSArray* arrInfoFields = [[NSArray alloc] initWithObjects:@"Project Number:", @"Inspection Date:", @"Prepared By:", @"Revised Date:", @"Revised By:",nil];
-        NSArray* arrENDOALPHAFields = [[NSArray alloc] initWithObjects:@"AVP", @"UCES", @"UCES+", @"SD Recording", @"HD Recording", nil];
-        NSArray* arrHospitalFields = [[NSArray alloc] initWithObjects:@"Hospital  Name:", @"Address:", @"City:", @"State", @"Zip:", nil];
-        
-        NSArray* arrENDOALPHAControl = [[NSArray alloc] initWithObjects:@"Cabling length does not exceed approx 130ft. between AV equipment to AVP Rack:", @"Hospital representative agreed to cable:", @"Placement of AVP agreed by hospital representative in accordance to installation manual:", @"Placement of Touch Panels agreed by hospital:", @"Audio and Video interfaces requirements and specifications have been discussed:", @"Data interfaces requirements and specifications have been discussed:", @"Other pre-installation requirements checked:", @"ENDOALPHA_Control_Comments", nil];
-        NSArray* arrENDOALPHAVideo = [[NSArray alloc] initWithObjects:@"Pre-installation requirements checked:", @"Cabling route agreed:", @"Placement of Recording Device agreed by hospital:", @"Video interfaces requirements and specifications have been discussed:", @"Data interfaces requirements and specifications have been discussed:", @"ENDOALPHA_Video_Comments", nil];
-        NSArray* arrBoomCompany = [[NSArray alloc] initWithObjects: @"Site was inspected by boom company:", @"Type of Boom (Model Number):", @"Tentative Install Dates:", @"Boom_Company_Comments", nil];
-        NSArray* arrSafety = [[NSArray alloc] initWithObjects:@"Construction:", @"Is Olympus Required For Tear Out:", @"Safety glasses required:", @"Safety shoes required:", @"Hard hat required:", @"Hearing protection required:", @"Scrubs required:", @"Safety_Comments", nil];
-        NSArray* arrDocuments = [[NSArray alloc] initWithObjects:@"2D Floor Plan:", @"Electrical Installation Scheme:", @"Facility Drawing:", @"Other:", nil];
-        NSArray* arrPreInstallSections = [[NSArray alloc] initWithObjects:@"ENDOALPHA", @"Video", @"Boom Company", @"Safety", @"Documents", nil];
-        
-        NSArray* arrORField = [[NSArray alloc] initWithObjects:@"Length (ft)", @"Width (ft)",  @"True Ceiling Height (ft)", @"False Ceiling Height (ft)", @"Ceiling:", @"Procedure Room Bldg.", @"Procedure Room Floor", @"Procedure Room Dept.", @"Procedure Room No.", @"Number of Monitors", @"Types of Monitors", @"Wall Location", nil];
-        
-        NSArray* arrLocatonFields = [[NSArray alloc] initWithObjects:@"Location ID", @"Other Location Building", @"Floor", @"Department", @"Name of Room", @"Distance From OR (ft)", @"Signal Connection", @"Network", @"AV Equipment", nil];
-        
-        NSArray* arrContactFilds = [[NSArray alloc] initWithObjects:@"Contact Name", @"Contact Phone", @"Contact Email", @"Contact Title", @"Main Contact", nil];
-        
-        NSArray* arrPreInstallFields = [[NSArray alloc] initWithObjects: arrENDOALPHAControl, arrENDOALPHAVideo, arrBoomCompany, arrSafety, arrDocuments, nil];
-
         //O logo
         UIImage* imgLogo = [UIImage imageNamed:@"OA_img_logo_pdf.png"];
         
@@ -140,610 +112,303 @@
         CGRect imgLogoFrame = CGRectMake(312-(imgLogo.size.width/2), (pageSize.height/3), imgLogo.size.width, imgLogo.size.height);
         [self drawImage:imgLogo :imgLogoFrame];
         
-        NSString* strPDFTitle = [NSString stringWithFormat:@"AVI Site Inspection Report for \n%@", projectNumber];
+        NSString* strPDFTitle = [NSString stringWithFormat:@"AVI Site Inspection Report for %@", projectNumber];
         textColor = [colorManager setColor:8 :16 :123];
         CGSize PDFTitleSize = [strPDFTitle sizeWithFont:headerFont constrainedToSize:pageConstraint lineBreakMode:NSLineBreakByWordWrapping];
         CGRect PDFTitleFrame = CGRectMake((pageSize.width/2)-(PDFTitleSize.width/2), imgLogoFrame.origin.y + imgLogoFrame.size.height + 50.0, PDFTitleSize.width, PDFTitleSize.height);
         [self drawText:strPDFTitle :PDFTitleFrame :headerFont :textColor :1];
         
+        /*************************OTHER PAGES*********************************/
         
-        /*********************PAGE 1****************************************/
+        //start new page
         UIGraphicsBeginPDFPageWithInfo(CGRectMake(0, 0, pageSize.width, pageSize.height), nil);
         
-        //add page title
-        NSString* strPageTitle = [NSString stringWithFormat:@"Site Integration Checklist for \n%@", projectNumber];
-        CGSize pageTitleSize = [strPageTitle sizeWithFont:headerFont constrainedToSize:pageConstraint lineBreakMode:NSLineBreakByWordWrapping];
-        CGRect pageTitleFrame = CGRectMake((pageSize.width/2)-(pageTitleSize.width/2), 30.0, pageTitleSize.width, pageTitleSize.height);
-        textColor = [colorManager setColor:8 :16 :123];
-        [self drawText:strPageTitle :pageTitleFrame :headerFont:textColor:1];
+        //set a content height holder
+        contentHeight = kBorderInset;
+        newPage = NO;
         
-        bgRectColor = [colorManager setColor:192 :205 :255];
-        bgRectStartPoint = CGPointMake(kMarginInset,pageTitleFrame.origin.y+pageTitleFrame.size.height + 30.0);
-        bgRectEndPoint = CGPointMake(pageSize.width-(kMarginInset), pageTitleFrame.origin.y+pageTitleFrame.size.height + 30.0);
-        lineWidth = kLineWidth*20;
-        [self drawLine:lineWidth:bgRectColor:bgRectStartPoint:bgRectEndPoint];
+        textY = 40.0;
+        textX = kMarginInset;
         
-        //add section title
-        NSString* strSiteInfo = @"Site Information";
-        sectionConstraint = [strSiteInfo sizeWithFont:headerFont constrainedToSize:pageConstraint lineBreakMode:NSLineBreakByWordWrapping];
-        sectionFrame = CGRectMake(kMarginInset+5.0, bgRectStartPoint.y-8.0, sectionConstraint.width, sectionConstraint.height);
-        textColor = [colorManager setColor:66.0 :66.0 :66.0];
-        [self drawText:strSiteInfo :sectionFrame :headerFont:textColor:0];
-        
-        textY = sectionFrame.origin.y + sectionFrame.size.height + 10.0;
-        textX = kMarginInset + 5.0;
-        for(int i=0; i<arrInfoFields.count; i++) {
+        for(int i=0; i<arrSections.count; i++) {
             
-            
-            NSString* strKey = [arrInfoFields objectAtIndex:i];
-            NSString* strValue = [dictProject objectForKey:strKey];
-            
-            //draw key
-            CGSize keySize = [strKey sizeWithFont:headerFont constrainedToSize:col1Constraint lineBreakMode:NSLineBreakByWordWrapping];
-            CGRect keyFrame = CGRectMake(textX, textY, keySize.width, keySize.height);
-            textColor = [colorManager setColor:66.0 :66.0 :66.0];
-            [self drawText:strKey :keyFrame :contentFont:textColor:0];
-            
-            //change x
-            textX = 400.0;
-            
-            //draw value
-            CGSize valueSize = [strValue sizeWithFont:headerFont constrainedToSize:col2Constraint lineBreakMode:NSLineBreakByWordWrapping];
-            CGRect valueFrame = CGRectMake(textX, textY, valueSize.width, valueSize.height);
-            textColor = [colorManager setColor:66.0 :66.0 :66.0];
-            [self drawText:strValue :valueFrame :contentFont:textColor:0];
-            
-            //increment y
-            textY = textY + 30.0;
-            
-            //reset x
-            textX = kMarginInset+5.0;
-        }
-        
-        //HOSPITAL INFORMATION
-        bgRectColor = [colorManager setColor:192 :205 :255];
-        bgRectStartPoint = CGPointMake(kMarginInset,textY + 30.0);
-        bgRectEndPoint = CGPointMake(pageSize.width-(kMarginInset), textY + 30.0);
-        lineWidth = kLineWidth*20;
-        [self drawLine:lineWidth:bgRectColor:bgRectStartPoint:bgRectEndPoint];
-        
-        //add section title
-        strSection = @"Hospital Information";
-        sectionConstraint = [strSection sizeWithFont:headerFont constrainedToSize:pageConstraint lineBreakMode:NSLineBreakByWordWrapping];
-        sectionFrame = CGRectMake(kMarginInset+5.0, bgRectStartPoint.y-8.0, sectionConstraint.width, sectionConstraint.height);
-        textColor = [colorManager setColor:66.0 :66.0 :66.0];
-        [self drawText:strSection :sectionFrame :headerFont:textColor:0];
-        
-        
-        textY = sectionFrame.origin.y + sectionFrame.size.height + 10.0;
-        textX = kMarginInset + 5.0;
-        for(int i=0; i<arrENDOALPHAFields.count; i++) {
-            
-            NSString* strKey = [arrHospitalFields objectAtIndex:i];
-            NSString* strValue = [dictProject objectForKey:strKey];
-            
-            //draw key
-            CGSize keySize = [strKey sizeWithFont:headerFont constrainedToSize:col1Constraint lineBreakMode:NSLineBreakByWordWrapping];
-            CGRect keyFrame = CGRectMake(textX, textY, keySize.width, keySize.height);
-            textColor = [colorManager setColor:66.0 :66.0 :66.0];
-            [self drawText:strKey :keyFrame :contentFont:textColor:0];
-            
-            //change x
-            textX = 400.0;
-            
-            //draw value
-            CGSize valueSize = [strValue sizeWithFont:headerFont constrainedToSize:col2Constraint lineBreakMode:NSLineBreakByWordWrapping];
-            CGRect valueFrame = CGRectMake(textX, textY, valueSize.width, valueSize.height);
-            textColor = [colorManager setColor:66.0 :66.0 :66.0];
-            [self drawText:strValue :valueFrame :contentFont:textColor:0];
-            
-            //increment y
-            textY = textY + 30.0;
-            
-            //reset x
-            textX = kMarginInset+5.0;
-        }
-        
-        //CONTACT INFORMATION
-        bgRectColor = [colorManager setColor:192 :205 :255];
-        bgRectStartPoint = CGPointMake(kMarginInset,textY + 30.0);
-        bgRectEndPoint = CGPointMake(pageSize.width-(kMarginInset), textY + 30.0);
-        lineWidth = kLineWidth*20;
-        [self drawLine:lineWidth:bgRectColor:bgRectStartPoint:bgRectEndPoint];
-        
-        //add section title
-        strSection = @"Contact Information";
-        sectionConstraint = [strSection sizeWithFont:headerFont constrainedToSize:pageConstraint lineBreakMode:NSLineBreakByWordWrapping];
-        sectionFrame = CGRectMake(kMarginInset+5.0, bgRectStartPoint.y-8.0, sectionConstraint.width, sectionConstraint.height);
-        textColor = [colorManager setColor:66.0 :66.0 :66.0];
-        [self drawText:strSection :sectionFrame :headerFont:textColor:0];
-        
-        textY = textY + 30.0;
-        for(NSString* strThisContact in dictContacts) {
-            
-            NSDictionary* thisContactData = [dictContacts objectForKey:strThisContact];
-            
-            //add yellow background for pre install sections
-            bgRectColor = [colorManager setColor:249 :234 :195];
-            bgRectStartPoint = CGPointMake(kMarginInset,textY + 30.0);
-            bgRectEndPoint = CGPointMake(pageSize.width-(kMarginInset), textY + 30.0);
-            lineWidth = kLineWidth*20;
-            [self drawLine:lineWidth:bgRectColor:bgRectStartPoint:bgRectEndPoint];
-            
-            //add section title
-            strSection = [NSString stringWithFormat:@"Contact Data: %@", strThisContact];
-            sectionConstraint = [strSection sizeWithFont:headerFont constrainedToSize:pageConstraint lineBreakMode:NSLineBreakByWordWrapping];
-            sectionFrame = CGRectMake(kMarginInset+5.0, bgRectStartPoint.y-8.0, sectionConstraint.width, sectionConstraint.height);
-            textColor = [colorManager setColor:66.0 :66.0 :66.0];
-            [self drawText:strSection :sectionFrame :headerFont:textColor:0];
-            
-            textY = textY + 45.0;
-            for(int i=0; i<arrContactFilds.count; i++) {
-                
-                NSString* strKey = [arrContactFilds objectAtIndex:i];
-                NSString* strValue = [thisContactData objectForKey:strKey];
-                
-                //draw key
-                CGSize keySize = [strKey sizeWithFont:headerFont constrainedToSize:col1Constraint lineBreakMode:NSLineBreakByWordWrapping];
-                CGRect keyFrame = CGRectMake(textX, textY, keySize.width, keySize.height);
-                textColor = [colorManager setColor:66.0 :66.0 :66.0];
-                [self drawText:strKey :keyFrame :contentFont:textColor:0];
-                
-                //change x
-                textX = 400.0;
-                
-                //draw value
-                CGSize valueSize = [strValue sizeWithFont:headerFont constrainedToSize:col2Constraint lineBreakMode:NSLineBreakByWordWrapping];
-                CGRect valueFrame = CGRectMake(textX, textY, valueSize.width, valueSize.height);
-                textColor = [colorManager setColor:66.0 :66.0 :66.0];
-                [self drawText:strValue :valueFrame :contentFont:textColor:0];
-                
-                //increment y
-                textY = textY + 20.0;
-                
-                //reset x
-                textX = kMarginInset+5.0;
-            }
-        }
-        
-        //page 3
-        UIGraphicsBeginPDFPageWithInfo(CGRectMake(0, 0, pageSize.width, pageSize.height), nil);
-        textY = kBorderInset;
-
-        
-        //ENDOALPHA SOLUTION
-        bgRectColor = [colorManager setColor:192 :205 :255];
-        bgRectStartPoint = CGPointMake(kMarginInset,textY + 30.0);
-        bgRectEndPoint = CGPointMake(pageSize.width-(kMarginInset), textY + 30.0);
-        lineWidth = kLineWidth*20;
-        [self drawLine:lineWidth:bgRectColor:bgRectStartPoint:bgRectEndPoint];
-        
-        //add section title
-        strSection = @"ENDOALPHA Solution";
-        sectionConstraint = [strSection sizeWithFont:headerFont constrainedToSize:pageConstraint lineBreakMode:NSLineBreakByWordWrapping];
-        sectionFrame = CGRectMake(kMarginInset+5.0, bgRectStartPoint.y-8.0, sectionConstraint.width, sectionConstraint.height);
-        textColor = [colorManager setColor:66.0 :66.0 :66.0];
-        [self drawText:strSection :sectionFrame :headerFont:textColor:0];
-        
-        
-        textY = sectionFrame.origin.y + sectionFrame.size.height + 10.0;
-        textX = kMarginInset + 5.0;
-        for(int i=0; i<arrENDOALPHAFields.count; i++) {
-            
-            NSString* strKey = [arrENDOALPHAFields objectAtIndex:i];
-            NSString* strValue = [dictProject objectForKey:strKey];
-            
-            //draw key
-            CGSize keySize = [strKey sizeWithFont:headerFont constrainedToSize:col1Constraint lineBreakMode:NSLineBreakByWordWrapping];
-            CGRect keyFrame = CGRectMake(textX, textY, keySize.width, keySize.height);
-            textColor = [colorManager setColor:66.0 :66.0 :66.0];
-            [self drawText:strKey :keyFrame :contentFont:textColor:0];
-            
-            //change x
-            textX = 400.0;
-            
-            //draw value
-            CGSize valueSize = [strKey sizeWithFont:headerFont constrainedToSize:col2Constraint lineBreakMode:NSLineBreakByWordWrapping];
-            CGRect valueFrame = CGRectMake(textX, textY, valueSize.width, valueSize.height);
-            textColor = [colorManager setColor:66.0 :66.0 :66.0];
-            [self drawText:strValue :valueFrame :contentFont:textColor:0];
-            
-            //increment y
-            textY = textY + 30.0;
-            
-            //reset x
-            textX = kMarginInset+5.0;
-        }
-        
-        //page 3
-        UIGraphicsBeginPDFPageWithInfo(CGRectMake(0, 0, pageSize.width, pageSize.height), nil);
-        textY = kBorderInset;
-        
-        //PRE INSTALL CHECKLIST - top of page textY does not increment, others will
-        bgRectColor = [colorManager setColor:192 :205 :255];
-        bgRectStartPoint = CGPointMake(kMarginInset,textY);
-        bgRectEndPoint = CGPointMake(pageSize.width-(kMarginInset), textY);
-        lineWidth = kLineWidth*20;
-        [self drawLine:lineWidth:bgRectColor:bgRectStartPoint:bgRectEndPoint];
-        
-        //add section title
-        strSection = @"Pre-Install Checklist";
-        sectionConstraint = [strSection sizeWithFont:headerFont constrainedToSize:pageConstraint lineBreakMode:NSLineBreakByWordWrapping];
-        sectionFrame = CGRectMake(kMarginInset+5.0, bgRectStartPoint.y-8.0, sectionConstraint.width, sectionConstraint.height);
-        textColor = [colorManager setColor:66.0 :66.0 :66.0];
-        [self drawText:strSection :sectionFrame :headerFont:textColor:0];
-        
-        for(int x=0; x<arrPreInstallSections.count; x++) {
-            
-            if (x<2) {
-                CGSize pageConstraint = CGSizeMake(pageSize.width - 2*kBorderInset-2*kMarginInset, pageSize.height - 2*kBorderInset - 2*kMarginInset);
-                
-                //add yellow background for pre install sections
-                bgRectColor = [colorManager setColor:249 :234 :195];
-                bgRectStartPoint = CGPointMake(kMarginInset,textY + 30.0);
-                bgRectEndPoint = CGPointMake(pageSize.width-(kMarginInset), textY + 30.0);
-                lineWidth = kLineWidth*20;
-                [self drawLine:lineWidth:bgRectColor:bgRectStartPoint:bgRectEndPoint];
-                
-                //add section title
-                strSection = [arrPreInstallSections objectAtIndex:x];
-                sectionConstraint = [strSection sizeWithFont:headerFont constrainedToSize:pageConstraint lineBreakMode:NSLineBreakByWordWrapping];
-                sectionFrame = CGRectMake(kMarginInset+5.0, bgRectStartPoint.y-8.0, sectionConstraint.width, sectionConstraint.height);
-                textColor = [colorManager setColor:66.0 :66.0 :66.0];
-                [self drawText:strSection :sectionFrame :headerFont:textColor:0];
-                
-                //show data
-                NSArray* arrSectionData = [arrPreInstallFields objectAtIndex:x];
-                
-                //loop through data
-                textY = textY+ 60;
-                for(int y=0; y<arrSectionData.count; y++) {
-                    
-                    NSString* strKey = [arrSectionData objectAtIndex:y];
-                    NSString* strValue = [dictProject objectForKey:strKey];
-                    
-                    //draw key
-                    CGSize keySize = [strKey sizeWithFont:headerFont constrainedToSize:col1Constraint lineBreakMode:NSLineBreakByWordWrapping];
-                    CGRect keyFrame = CGRectMake(textX, textY, keySize.width, keySize.height);
-                    textColor = [colorManager setColor:66.0 :66.0 :66.0];
-                    [self drawText:strKey :keyFrame :contentFont:textColor:0];
-                    
-                    //change x
-                    textX = 400.0;
-                    
-                    //draw value
-                    CGSize valueSize = [strKey sizeWithFont:headerFont constrainedToSize:col2Constraint lineBreakMode:NSLineBreakByWordWrapping];
-                    CGRect valueFrame = CGRectMake(textX, textY, valueSize.width, valueSize.height);
-                    textColor = [colorManager setColor:66.0 :66.0 :66.0];
-                    [self drawText:strValue :valueFrame :contentFont:textColor:0];
-                    
-                    //increment y
-                    textY = textY + 40.0;
-                    
-                    //reset x
-                    textX = kMarginInset+5.0;
-                    
-                }
-                
-            } else if (x > 1) {
-                
-                //new page
-                if (x==2) {
-                    //page 4
-                    UIGraphicsBeginPDFPageWithInfo(CGRectMake(0, 0, pageSize.width, pageSize.height), nil);
-                    textY = kBorderInset;
-                }
-                
-                //add yellow background for pre install sections
-                bgRectColor = [colorManager setColor:249 :234 :195];
-                bgRectStartPoint = CGPointMake(kMarginInset,textY + 30.0);
-                bgRectEndPoint = CGPointMake(pageSize.width-(kMarginInset), textY + 30.0);
-                lineWidth = kLineWidth*20;
-                [self drawLine:lineWidth:bgRectColor:bgRectStartPoint:bgRectEndPoint];
-                
-                //add section title
-                strSection = [arrPreInstallSections objectAtIndex:x];
-                sectionConstraint = [strSection sizeWithFont:headerFont constrainedToSize:pageConstraint lineBreakMode:NSLineBreakByWordWrapping];
-                sectionFrame = CGRectMake(kMarginInset+5.0, bgRectStartPoint.y-8.0, sectionConstraint.width, sectionConstraint.height);
-                textColor = [colorManager setColor:66.0 :66.0 :66.0];
-                [self drawText:strSection :sectionFrame :headerFont:textColor:0];
-                
-                //show data
-                NSArray* arrSectionData = [arrPreInstallFields objectAtIndex:x];
-                
-                //loop through data
-                textY = textY+ 60;
-                for(int y=0; y<arrSectionData.count; y++) {
-                    
-                    NSString* strKey = [arrSectionData objectAtIndex:y];
-                    NSString* strValue = [dictProject objectForKey:strKey];
-                    
-                    //draw key
-                    CGSize keySize = [strKey sizeWithFont:headerFont constrainedToSize:col1Constraint lineBreakMode:NSLineBreakByWordWrapping];
-                    CGRect keyFrame = CGRectMake(textX, textY, keySize.width, keySize.height);
-                    textColor = [colorManager setColor:66.0 :66.0 :66.0];
-                    [self drawText:strKey :keyFrame :contentFont:textColor:0];
-                    
-                    //change x
-                    textX = 400.0;
-                    
-                    //draw value
-                    CGSize valueSize = [strKey sizeWithFont:headerFont constrainedToSize:col2Constraint lineBreakMode:NSLineBreakByWordWrapping];
-                    CGRect valueFrame = CGRectMake(textX, textY, valueSize.width, valueSize.height);
-                    textColor = [colorManager setColor:66.0 :66.0 :66.0];
-                    [self drawText:strValue :valueFrame :contentFont:textColor:0];
-                    
-                    //increment y
-                    textY = textY + 30.0;
-                    
-                    //reset x
-                    textX = kMarginInset+5.0;
-                }
+            /*********************ADD THE SECTION HEADERS*********************/
+            if (textY > 700.0) {
+                UIGraphicsBeginPDFPageWithInfo(CGRectMake(0, 0, pageSize.width, pageSize.height), nil);
+                textY = 40.0;
             }
             
+            NSString* strSiteInfo = [arrSections objectAtIndex:i];
+            bgRectColor = [colorManager setColor:192 :205 :255];
+            [self makeDivider:strSiteInfo :bgRectColor];
             
-        }
-        
-        //page 5
-        UIGraphicsBeginPDFPageWithInfo(CGRectMake(0, 0, pageSize.width, pageSize.height), nil);
-        textY = kBorderInset;
-        
-        //OR INFORMATION
-        bgRectColor = [colorManager setColor:192 :205 :255];
-        bgRectStartPoint = CGPointMake(kMarginInset,textY + 30.0);
-        bgRectEndPoint = CGPointMake(pageSize.width-(kMarginInset), textY + 30.0);
-        lineWidth = kLineWidth*20;
-        [self drawLine:lineWidth:bgRectColor:bgRectStartPoint:bgRectEndPoint];
-        
-        //add section title
-        strSection = @"Operating Room Information";
-        sectionConstraint = [strSection sizeWithFont:headerFont constrainedToSize:pageConstraint lineBreakMode:NSLineBreakByWordWrapping];
-        sectionFrame = CGRectMake(kMarginInset+5.0, bgRectStartPoint.y-8.0, sectionConstraint.width, sectionConstraint.height);
-        textColor = [colorManager setColor:66.0 :66.0 :66.0];
-        [self drawText:strSection :sectionFrame :headerFont:textColor:0];
-        
-        textY = textY + 30.0;
-        for(NSString* strThisOR in dictOR) {
+            if (i>3) {
+                textY = textY + 12.0;
+            }
             
-            NSDictionary* thisORData = [dictOR objectForKey:strThisOR];
+            /*********************ADD THE SECTION DATA**************************/
             
-            //add yellow background for pre install sections
-            bgRectColor = [colorManager setColor:249 :234 :195];
-            bgRectStartPoint = CGPointMake(kMarginInset,textY + 30.0);
-            bgRectEndPoint = CGPointMake(pageSize.width-(kMarginInset), textY + 30.0);
-            lineWidth = kLineWidth*20;
-            [self drawLine:lineWidth:bgRectColor:bgRectStartPoint:bgRectEndPoint];
+            //get the right dictionary to use
+            BOOL isContact = NO;
+            BOOL isRoom = NO;
+            NSDictionary* dictSectionData;
+            if ([strSiteInfo isEqualToString:@"Procedure Rooms"]) {
+                dictSectionData = dictProcedureRooms;
+                isRoom = YES;
+            } else if ([strSiteInfo isEqualToString:@"Contacts"]) {
+                isContact = YES;
+                dictSectionData = dictContacts;
+            } else {
+                dictSectionData = dictProject;
+            }
             
-            //add section title
-            strSection = [NSString stringWithFormat:@"Operating Room: %@", strThisOR];
-            sectionConstraint = [strSection sizeWithFont:headerFont constrainedToSize:pageConstraint lineBreakMode:NSLineBreakByWordWrapping];
-            sectionFrame = CGRectMake(kMarginInset+5.0, bgRectStartPoint.y-8.0, sectionConstraint.width, sectionConstraint.height);
-            textColor = [colorManager setColor:66.0 :66.0 :66.0];
-            [self drawText:strSection :sectionFrame :headerFont:textColor:0];
-            
-            textY = textY + 45.0;
-            for(int i=0; i<arrORField.count; i++) {
-             
-                NSString* strKey = [arrORField objectAtIndex:i];
-                NSString* strValue = [thisORData objectForKey:strKey];
+            if (isContact) {
                 
-                if ([strKey isEqualToString:@"Ceiling:"]) {
-                    if ([strValue isEqualToString:@"0"]) {
-                        strValue = @"Hatch";
-                    } else if ([strValue isEqualToString:@"1"]) {
-                        strValue = @"Drop Ceiling";
-                    } else if ([strValue isEqualToString:@"2"]) {
-                        strValue = @"Sealed";
+                //loop through the contacts
+                for(NSString* strContactKey in dictContacts) {
+                    
+                    NSDictionary* dictThisContact = [dictContacts objectForKey:strContactKey];
+                    
+                    [self makeRow:arrContactFields :dictThisContact];
+                    
+                }
+                
+            } else if (isRoom) {
+                
+                //loop through the rooms
+                for(NSString* strRoomKey in dictProcedureRooms) {
+                    
+                    //add room title
+                    /*************room title***********************/
+                    
+                    [self makeDivider:strRoomKey:[colorManager setColor:204.0 :204.0 :204.0]];
+                    
+                    /*************room data***********************/
+                    
+                    NSDictionary* dictThisRoom = [dictProcedureRooms objectForKey:strRoomKey];
+                    
+                    //loop through the room data array
+                    [self makeRow:arrORField :dictThisRoom];
+                    
+                    //check if the room has any location data
+                    for(NSString* strLocationKey in dictLocations) {
+                        
+                        NSDictionary* dictThisLocation = [dictLocations objectForKey:strLocationKey];
+                        NSString* strLocationParent = [dictThisLocation objectForKey:@"Operating Room ID"];
+                        if ([strLocationParent isEqualToString:strRoomKey]) {
+                            
+                            textY = textY + 10.0;
+                            [self makeRow:arrLocatonFields :dictThisLocation];
+                        }
+                    }
+                    
+                    
+                    //increment y to account for end of room
+                    textY = textY + 20.0;
+                    if (textY > 700.0) {
+                        UIGraphicsBeginPDFPageWithInfo(CGRectMake(0, 0, pageSize.width, pageSize.height), nil);
+                        textY = 40.0;
+                        
                     }
                 }
-                                
                 
-                //draw key
-                CGSize keySize = [strKey sizeWithFont:headerFont constrainedToSize:col1Constraint lineBreakMode:NSLineBreakByWordWrapping];
-                CGRect keyFrame = CGRectMake(textX, textY, keySize.width, keySize.height);
-                textColor = [colorManager setColor:66.0 :66.0 :66.0];
-                [self drawText:strKey :keyFrame :contentFont:textColor:0];
+            } else {
                 
-                //change x
-                textX = 400.0;
-                
-                //draw value
-                CGSize valueSize = [strValue sizeWithFont:headerFont constrainedToSize:contactConstraint lineBreakMode:NSLineBreakByWordWrapping];
-                CGRect valueFrame = CGRectMake(textX, textY, valueSize.width, valueSize.height);
-                textColor = [colorManager setColor:66.0 :66.0 :66.0];
-                [self drawText:strValue :valueFrame :contentFont:textColor:0];
-                
-                //increment y
-                textY = textY + 20.0;
-                
-                //reset x
-                textX = kMarginInset+5.0;
-            }
-        }
-        
-        if (dictLocations.count > 0) {
-            
-            //page 6
-            UIGraphicsBeginPDFPageWithInfo(CGRectMake(0, 0, pageSize.width, pageSize.height), nil);
-            textY = kBorderInset;
-        
-            //Location INFORMATION
-            bgRectColor = [colorManager setColor:192 :205 :255];
-            bgRectStartPoint = CGPointMake(kMarginInset,textY + 30.0);
-            bgRectEndPoint = CGPointMake(pageSize.width-(kMarginInset), textY + 30.0);
-            lineWidth = kLineWidth*20;
-            [self drawLine:lineWidth:bgRectColor:bgRectStartPoint:bgRectEndPoint];
-            
-            //add section title
-            strSection = @"Location Information";
-            sectionConstraint = [strSection sizeWithFont:headerFont constrainedToSize:pageConstraint lineBreakMode:NSLineBreakByWordWrapping];
-            sectionFrame = CGRectMake(kMarginInset+5.0, bgRectStartPoint.y-8.0, sectionConstraint.width, sectionConstraint.height);
-            textColor = [colorManager setColor:66.0 :66.0 :66.0];
-            [self drawText:strSection :sectionFrame :headerFont:textColor:0];
-            
-            textY = textY + 30.0;
-            for(NSString* strThisLocation in dictLocations) {
-                
-                NSDictionary* thisLocationData = [dictLocations objectForKey:strThisLocation];
-                
-                //add yellow background for pre install sections
-                bgRectColor = [colorManager setColor:249 :234 :195];
-                bgRectStartPoint = CGPointMake(kMarginInset,textY + 30.0);
-                bgRectEndPoint = CGPointMake(pageSize.width-(kMarginInset), textY + 30.0);
-                lineWidth = kLineWidth*20;
-                [self drawLine:lineWidth:bgRectColor:bgRectStartPoint:bgRectEndPoint];
-                
-                //add section title
-                strSection = [NSString stringWithFormat:@"Location Room: %@", strThisLocation];
-                sectionConstraint = [strSection sizeWithFont:headerFont constrainedToSize:pageConstraint lineBreakMode:NSLineBreakByWordWrapping];
-                sectionFrame = CGRectMake(kMarginInset+5.0, bgRectStartPoint.y-8.0, sectionConstraint.width, sectionConstraint.height);
-                textColor = [colorManager setColor:66.0 :66.0 :66.0];
-                [self drawText:strSection :sectionFrame :headerFont:textColor:0];
-                
-                textY = textY + 45.0;
-                for(int i=0; i<arrLocatonFields.count; i++) {
+                if(i<4) {
                     
-                    NSString* strKey = [arrLocatonFields objectAtIndex:i];
-                    NSString* strValue = [thisLocationData objectForKey:strKey];
+                    NSArray* arrThisSectionData = [arrAllSections objectAtIndex:i];
                     
-                    //draw key
-                    CGSize keySize = [strKey sizeWithFont:headerFont constrainedToSize:col1Constraint lineBreakMode:NSLineBreakByWordWrapping];
-                    CGRect keyFrame = CGRectMake(textX, textY, keySize.width, keySize.height);
-                    textColor = [colorManager setColor:66.0 :66.0 :66.0];
-                    [self drawText:strKey :keyFrame :contentFont:textColor:0];
+                    if(![strSiteInfo isEqualToString:@"Pre-Install Checks"]) {
+                        [self makeRow:arrThisSectionData :dictSectionData];
+                    } else {
+                        
+                        for(int x=0; x<arrPreInstallSections.count; x++) {
+                            
+                            NSString* strSubSectionHeader = [arrPreInstallSections objectAtIndex:x];
+                            
+                            [self makeDivider:strSubSectionHeader:[colorManager setColor:204.0 :204.0 :204.0]];
+                            
+                            //set the section data
+                            NSArray* arrSubsections = [arrThisSectionData objectAtIndex:x];
+                            
+                            [self makeRow:arrSubsections :dictProject];
+                        }
+                        
+                    }
                     
-                    //change x
-                    textX = 400.0;
+                    textY = textY + 30;
                     
-                    //draw value
-                    CGSize valueSize = [strKey sizeWithFont:headerFont constrainedToSize:col2Constraint lineBreakMode:NSLineBreakByWordWrapping];
-                    CGRect valueFrame = CGRectMake(textX, textY, valueSize.width, valueSize.height);
-                    textColor = [colorManager setColor:66.0 :66.0 :66.0];
-                    [self drawText:strValue :valueFrame :contentFont:textColor:0];
-                    
-                    //increment y
-                    textY = textY + 20.0;
-                    
-                    //reset x
-                    textX = kMarginInset+5.0;
                 }
+                
             }
         }
         
-        //page 7
-        UIGraphicsBeginPDFPageWithInfo(CGRectMake(0, 0, pageSize.width, pageSize.height), nil);
-        textY = kBorderInset;
-        
-        //CONTACT INFORMATION
-        bgRectColor = [colorManager setColor:192 :205 :255];
-        bgRectStartPoint = CGPointMake(kMarginInset,textY + 30.0);
-        bgRectEndPoint = CGPointMake(pageSize.width-(kMarginInset), textY + 30.0);
-        lineWidth = kLineWidth*20;
-        [self drawLine:lineWidth:bgRectColor:bgRectStartPoint:bgRectEndPoint];
-        
-        //add section title
-        /*strSection = @"Contact Information";
-        sectionConstraint = [strSection sizeWithFont:headerFont constrainedToSize:pageConstraint lineBreakMode:NSLineBreakByWordWrapping];
-        sectionFrame = CGRectMake(kMarginInset+5.0, bgRectStartPoint.y-8.0, sectionConstraint.width, sectionConstraint.height);
-        textColor = [colorManager setColor:66.0 :66.0 :66.0];
-        [self drawText:strSection :sectionFrame :headerFont:textColor:0];
-        
-        textY = textY + 30.0;
-        for(NSString* strThisContact in dictContacts) {
-            
-            NSDictionary* thisContactData = [dictContacts objectForKey:strThisContact];
-            
-            //add yellow background for pre install sections
-            bgRectColor = [colorManager setColor:249 :234 :195];
-            bgRectStartPoint = CGPointMake(kMarginInset,textY + 30.0);
-            bgRectEndPoint = CGPointMake(pageSize.width-(kMarginInset), textY + 30.0);
-            lineWidth = kLineWidth*20;
-            [self drawLine:lineWidth:bgRectColor:bgRectStartPoint:bgRectEndPoint];
-            
-            //add section title
-            strSection = [NSString stringWithFormat:@"Contact Data: %@", strThisContact];
-            sectionConstraint = [strSection sizeWithFont:headerFont constrainedToSize:pageConstraint lineBreakMode:NSLineBreakByWordWrapping];
-            sectionFrame = CGRectMake(kMarginInset+5.0, bgRectStartPoint.y-8.0, sectionConstraint.width, sectionConstraint.height);
-            textColor = [colorManager setColor:66.0 :66.0 :66.0];
-            [self drawText:strSection :sectionFrame :headerFont:textColor:0];
-            
-            textY = textY + 45.0;
-            for(int i=0; i<arrContactFilds.count; i++) {
-                
-                NSString* strKey = [arrContactFilds objectAtIndex:i];
-                NSString* strValue = [thisContactData objectForKey:strKey];
-                
-                //draw key
-                CGSize keySize = [strKey sizeWithFont:headerFont constrainedToSize:col1Constraint lineBreakMode:NSLineBreakByWordWrapping];
-                CGRect keyFrame = CGRectMake(textX, textY, keySize.width, keySize.height);
-                textColor = [colorManager setColor:66.0 :66.0 :66.0];
-                [self drawText:strKey :keyFrame :contentFont:textColor:0];
-                
-                //change x
-                textX = 350.0;
-                
-                //draw value
-                CGSize valueSize = [strValue sizeWithFont:headerFont constrainedToSize:contactConstraint lineBreakMode:NSLineBreakByWordWrapping];
-                CGRect valueFrame = CGRectMake(textX, textY, valueSize.width, valueSize.height);
-                textColor = [colorManager setColor:66.0 :66.0 :66.0];
-                [self drawText:strValue :valueFrame :contentFont:textColor:0];
-                
-                //increment y
-                textY = textY + 20.0;
-                
-                //reset x
-                textX = kMarginInset+5.0;
-            }
-        }*/
-        
-        //misc. inof
-        
-        NSString* strMiscInfo = [dictProject objectForKey:@"Miscellaneous Info:"];
-        
-        if (strMiscInfo != nil) { 
-            NSLog(@"ok");
-            UIGraphicsBeginPDFPageWithInfo(CGRectMake(0, 0, pageSize.width, pageSize.height), nil);
-            textY = kBorderInset;
-            
-            //MISC INFORMATION
-            bgRectColor = [colorManager setColor:192 :205 :255];
-            bgRectStartPoint = CGPointMake(kMarginInset,textY + 30.0);
-            bgRectEndPoint = CGPointMake(pageSize.width-(kMarginInset), textY + 30.0);
-            lineWidth = kLineWidth*20;
-            [self drawLine:lineWidth:bgRectColor:bgRectStartPoint:bgRectEndPoint];
-            
-            //add section title
-            strSection = @"Miscellaneous Information";
-            sectionConstraint = [strSection sizeWithFont:headerFont constrainedToSize:pageConstraint lineBreakMode:NSLineBreakByWordWrapping];
-            sectionFrame = CGRectMake(kMarginInset+5.0, bgRectStartPoint.y-8.0, sectionConstraint.width, sectionConstraint.height);
-            textColor = [colorManager setColor:66.0 :66.0 :66.0];
-            [self drawText:strSection :sectionFrame :headerFont:textColor:0];
-            
-            textY = textY + 50.0;
-            
-            //draw value
-            CGSize valueSize = [strMiscInfo sizeWithFont:contentFont constrainedToSize:pageConstraint lineBreakMode:NSLineBreakByWordWrapping];
-            CGRect valueFrame = CGRectMake(textX, textY, valueSize.width, valueSize.height);
-            textColor = [colorManager setColor:66.0 :66.0 :66.0];
-            [self drawText:strMiscInfo :valueFrame :contentFont:textColor:0];
-            
-        }
-
+        //keep at bottom
         done = YES;
         
     } while (!done);
-    
+
     // Close the PDF context and write the contents out.
     UIGraphicsEndPDFContext();
+
+}
+
+- (void) makeDivider : (NSString*) strDivider : (UIColor*) clrDivider {
+    
+    textY = textY + 10.0;
+    
+    bgRectColor = clrDivider;
+    bgRectStartPoint = CGPointMake(textX,textY);
+    bgRectEndPoint = CGPointMake(pageSize.width-(textX), textY);
+    lineWidth = kLineWidth*20;
+    [self drawLine:lineWidth:bgRectColor:bgRectStartPoint:bgRectEndPoint];
+    
+    textY = textY - 8.0;
+    
+    sectionConstraint = [strDivider sizeWithFont:headerFont constrainedToSize:pageConstraint lineBreakMode:NSLineBreakByWordWrapping];
+    sectionFrame = CGRectMake(textX, textY, sectionConstraint.width, sectionConstraint.height);
+    textColor = [colorManager setColor:66.0 :66.0 :66.0];
+    [self drawText:strDivider :sectionFrame :headerFont:textColor:0];
+    
+    textY = textY + 20.0;
     
 }
 
+- (void) makeRow : (NSArray*) myArray : (NSDictionary*) myDictionary {
+    
+    for(int i=0; i<myArray.count; i++) {
+        
+        NSArray* arrKeyValue;
+        
+        arrKeyValue = [self compareData:[myArray objectAtIndex:i] :myDictionary:0];
+        
+        strThisKey = [arrKeyValue objectAtIndex:0];
+        strThisValue = [arrKeyValue objectAtIndex:1];
+        
+        //display the key/values
+        float thisHeight = [self displayKeyValue:strThisKey :strThisValue:textX:textY];
+        
+        //add padding to key/values with just one line
+        if (thisHeight == 15.0) {
+            thisHeight = 17.0;
+        } else if (thisHeight == 30) {
+            thisHeight = 32.0;
+        }
+        
+        //increment content height
+        contentHeight = contentHeight + thisHeight;
+        
+        //increment y, reset x
+        textY = textY + thisHeight;
+        textX = kMarginInset;
+        
+        if (textY > 700.0) {
+            UIGraphicsBeginPDFPageWithInfo(CGRectMake(0, 0, pageSize.width, pageSize.height), nil);
+            textY = 40.0;
+        }
+        
+    }
+    
+}
+
+- (NSArray*) compareData : (NSString*) strFromArray : (NSDictionary*) dictSection : (int) dataType {
+    
+    
+    for(NSString* strThisDataKey in dictSection) {
+        
+        if([strFromArray isEqualToString:strThisDataKey]) {
+            
+            NSString* strThisDataValue;
+            if (![strFromArray isEqualToString:@"Monitors"]) { 
+                strThisDataValue = [dictSection objectForKey:strThisDataKey];
+            } else {
+                
+                NSMutableString* strMonitors = [[NSMutableString alloc] init];
+                NSArray* arrMonitors = [dictSection objectForKey:strThisDataKey];
+                
+                if (arrMonitors.count > 0) { 
+                    for(int i=0; i<arrMonitors.count; i++) {
+                        
+                        if (i<arrMonitors.count-1) { 
+                            [strMonitors appendString:[NSString stringWithFormat:@"%@, ", [arrMonitors objectAtIndex:i]]];
+                        } else {
+                            [strMonitors appendString:[NSString stringWithFormat:@"%@ ", [arrMonitors objectAtIndex:i]]];
+                        }
+                    }
+                    
+                    strThisDataValue = strMonitors;
+                    
+                } else {
+                    strThisDataValue = @"No Entry";
+                }
+            }
+            
+            //convert ceiling index to string
+            if ([strFromArray isEqualToString:@"Ceiling:"]) {
+                
+                int ceilingInt = [strThisDataValue intValue];
+                if (ceilingInt == 0) {
+                    strThisDataValue = @"Hatch";
+                } else if (ceilingInt == 1) {
+                    strThisDataValue = @"Drop Ceiling";
+                } else if (ceilingInt == 2) {
+                    strThisDataValue = @"Sealed";
+                } else if (ceilingInt == -1) {
+                    strThisDataValue = @"No Entry";
+                }
+            }
+            
+            NSArray* arrDataToReturn = [[NSArray alloc] initWithObjects:strThisDataKey, strThisDataValue, nil];
+            
+            return arrDataToReturn;
+            
+        } else {
+            
+            //NSLog(@"%@::%@", strThisKey, strFromArray);
+        }
+    }
+    
+    return nil;
+    
+}
+
+- (float) displayKeyValue : (NSString*) myKey : (NSString*) myValue : (float) myX : (float) myY {
+    
+    //display key
+    CGSize keyConstraint = [myKey sizeWithFont:headerFont constrainedToSize:CGSizeMake(300.0, pageSize.height) lineBreakMode:NSLineBreakByWordWrapping];
+    CGRect keyFrame = CGRectMake(myX, myY, keyConstraint.width, keyConstraint.height);
+    textColor = [colorManager setColor:66.0 :66.0 :66.0];
+    [self drawText:myKey :keyFrame :contentFont:textColor:0];
+    
+    //display value
+    myX = 420.0;
+    CGSize valueConstraint = [myValue sizeWithFont:headerFont constrainedToSize:CGSizeMake(300, pageSize.height) lineBreakMode:NSLineBreakByWordWrapping];
+    
+    float frameHeight = 0.0;
+    if (valueConstraint.height > keyConstraint.height) {
+        frameHeight = valueConstraint.height;
+    } else {
+        frameHeight = keyConstraint.height;
+    }
+    
+    CGRect valueFrame = CGRectMake(myX, myY, valueConstraint.width+50.0, frameHeight);
+    textColor = [colorManager setColor:66.0 :66.0 :66.0];
+    [self drawText:myValue :valueFrame :contentFont:textColor:0];
+    
+    
+    
+    //increase content height
+    return frameHeight;
+    
+}
+
+
 #pragma mark - Drawing Methods
 
-- (void) drawText : (NSString* ) textToDraw : (CGRect) textFrame : (UIFont*) textFont : (UIColor*) textColor : (int) textAlignment {
+- (void) drawText : (NSString* ) textToDraw : (CGRect) textFrame : (UIFont*) textFont : (UIColor*) myTextColor : (int) textAlignment {
     
     CGContextRef currentContext = UIGraphicsGetCurrentContext();
-    CGContextSetFillColorWithColor(currentContext, textColor.CGColor);
+    CGContextSetFillColorWithColor(currentContext, myTextColor.CGColor);
     
     int myTextAlignment = textAlignment;
     
@@ -755,11 +420,11 @@
    [imageToDraw drawInRect:imageFrame];
 }
 
-- (void) drawLine : (float) lineWidth : (UIColor*) lineColor : (CGPoint) startPoint : (CGPoint) endPoint  {
+- (void) drawLine : (float) myLineWidth : (UIColor*) lineColor : (CGPoint) startPoint : (CGPoint) endPoint  {
     
     CGContextRef currentContext = UIGraphicsGetCurrentContext();
     
-    CGContextSetLineWidth(currentContext, lineWidth);
+    CGContextSetLineWidth(currentContext, myLineWidth);
     CGContextSetStrokeColorWithColor(currentContext, lineColor.CGColor);
     
     CGContextBeginPath(currentContext);
@@ -817,7 +482,7 @@
 
 }
 
-- (void) setHeaderText : (NSArray*) headers : (UIFont*) font : (float) headerX : (float) headerY : (float) headerW : (float) headerH : (UIColor*) textColor {
+- (void) setHeaderText : (NSArray*) headers : (UIFont*) font : (float) headerX : (float) headerY : (float) headerW : (float) headerH : (UIColor*) myTextColor {
     
     for(int i=0; i<headers.count; i++) {
         
@@ -839,11 +504,11 @@
         }
         
         CGRect thisHeaderFrame = CGRectMake(headerX, headerY, headerW, headerH);
-        [self drawText:strThisHeader :thisHeaderFrame :font:textColor:0];
+        [self drawText:strThisHeader :thisHeaderFrame :font:myTextColor:0];
     }
 }
 
-- (void) buildAlternatingTableRows : (NSArray*) rowHeaders : (UIColor* ) color1 : (UIColor* ) color2 : (float) rowX : (float) rowY : (float) endRowX : (float) endRowY : (float) lineWidth {
+- (void) buildAlternatingTableRows : (NSArray*) rowHeaders : (UIColor* ) color1 : (UIColor* ) color2 : (float) rowX : (float) rowY : (float) endRowX : (float) endRowY : (float) myLineWidth {
     
     for(int i=0; i<rowHeaders.count; i++) {
     
@@ -862,14 +527,14 @@
         
         CGPoint rowStartPoint = CGPointMake(rowX, rowY);
         CGPoint rowEndPoint = CGPointMake(endRowX, endRowY);
-        [self drawLine:lineWidth:rowColor:rowStartPoint:rowEndPoint];
+        [self drawLine:myLineWidth:rowColor:rowStartPoint:rowEndPoint];
         
     }
 
     
 }
 
-- (void) setRowText : (NSArray* ) rowCellContents : (float) strX : (float) strY : (float) strW : (float) strH : (UIColor*) textColor : (UIFont*) font {
+- (void) setRowText : (NSArray* ) rowCellContents : (float) strX : (float) strY : (float) strW : (float) strH : (UIColor*) myTextColor : (UIFont*) font {
     
     for(int r=0; r<rowCellContents.count; r++) {
         
@@ -890,7 +555,7 @@
         }
         
         CGRect thisRowCellFrame = CGRectMake(strX, strY, strW, strH);
-        [self drawText:thisRowItem :thisRowCellFrame :font:textColor:0];
+        [self drawText:thisRowItem :thisRowCellFrame :font:myTextColor:0];
         
     }
 
@@ -923,5 +588,27 @@
     return thisRowCellData;
     
 }
+
+#pragma mark - Check content height
+
+- (BOOL) checkContentHeight : (float) elementHeight {
+    
+    
+    if (elementHeight > pageSize.height - 500.0) {
+        return YES;
+    }
+    
+    return NO;
+    
+}
+
+- (void) makeNewPage {
+    
+    UIGraphicsBeginPDFPageWithInfo(CGRectMake(0, 0, pageSize.width, pageSize.height), nil);
+    textY = kBorderInset;
+    contentHeight = kMarginInset;
+    
+}
+
 
 @end

@@ -96,6 +96,9 @@
         BOOL success = [plistData writeToFile:plistPath atomically:YES];
         return success;
     } else {
+        //get the file name
+        
+        
         [self createPlist:plistToWrite];
         BOOL success = [plistData writeToFile:plistPath atomically:YES];
         return success;
@@ -105,8 +108,11 @@
 }
 
 - (void) createPlist : (NSString* ) filePath  {
+    
+    
     //set path to plist to read in docs directory
-    NSString* plistPath = [documentsDirectory stringByAppendingPathComponent:filePath];
+    NSString* plistPath = filePath;
+    //[documentsDirectory stringByAppendingPathComponent:filePath];
     
     //if it doesn't exists, create it
     if(![fileManager fileExistsAtPath:plistPath]) {
@@ -122,16 +128,18 @@
         }
         
         //get the last item (this is our filename)
-        NSString* fileName = [plistPathItems objectAtIndex:plistPathItems.count-1];
+        NSString* fileName;
+        if (plistPathItems.count > 1) { 
+            fileName = [plistPathItems objectAtIndex:plistPathItems.count-1];
+        } else {
+            fileName = filePath;
+        }
         
         //create a dictionary and populate with filename
         NSDictionary* dataDictionary = [[NSDictionary alloc] initWithObjectsAndKeys:
                                         fileName, @"File Name",
                                         nil];
         [dataDictionary writeToFile: plistPath atomically:YES];
-        
-        
-        
         
     }
     

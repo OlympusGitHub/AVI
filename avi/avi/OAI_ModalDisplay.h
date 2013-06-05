@@ -62,4 +62,6 @@
 
 - (void) reloadTitleBar;
 
+- (void) reloadMyTitleBar;
+
 @end
